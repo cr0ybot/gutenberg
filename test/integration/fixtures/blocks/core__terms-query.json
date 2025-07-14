@@ -1,0 +1,19 @@
+[
+	{
+		"name": "core/terms-query",
+		"isValid": true,
+		"attributes": {
+			"queryId": 0,
+			"query": {
+				"taxonomy": "category",
+				"order": "asc",
+				"orderBy": "name",
+				"hideEmpty": true,
+				"hierarchical": false,
+				"showOnlyTopLevel": false
+			},
+			"tagName": "div"
+		},
+		"innerBlocks": []
+	}
+]
