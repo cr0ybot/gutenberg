@@ -941,6 +941,15 @@ Display the description of categories, tags and custom taxonomies when viewing a
 -	**Supports:** align (full, wide), color (background, link, text), interactivity (clientNavigation), spacing (margin, padding), typography (fontSize, lineHeight), ~~html~~
 -	**Attributes:** textAlign
 
+## Terms Query
+
+An advanced block that allows displaying taxonomy terms based on different query parameters and visual configurations. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/terms-query))
+
+-	**Name:** core/terms-query
+-	**Category:** theme
+-	**Supports:** align (full, wide), interactivity, layout, ~~html~~
+-	**Attributes:** namespace, query, queryId, tagName
+
 ## Text Columns (deprecated)
 
 This block is deprecated. Please use the Columns block instead. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/text-columns))
