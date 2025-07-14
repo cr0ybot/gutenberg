@@ -28,6 +28,7 @@ The Terms Query block supports the following query parameters:
 
 - `taxonomy` - The taxonomy to query (default: 'category')
 - `perPage` - Number of terms per page
+- `pages` - Number of pages to query
 - `order` - Order direction ('asc' or 'desc')
 - `orderBy` - Order by field ('name', 'slug', 'term_id', 'count')
 - `hideEmpty` - Whether to hide terms with no posts

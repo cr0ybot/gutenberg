@@ -23,7 +23,6 @@
 				"hideEmpty": true,
 				"include": [],
 				"exclude": [],
-				"inherit": false,
 				"parent": 0,
 				"hierarchical": false,
 				"showOnlyTopLevel": false
