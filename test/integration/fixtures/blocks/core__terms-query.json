@@ -5,10 +5,15 @@
 		"attributes": {
 			"queryId": 0,
 			"query": {
+				"perPage": 100,
+				"pages": 0,
 				"taxonomy": "category",
 				"order": "asc",
 				"orderBy": "name",
 				"hideEmpty": true,
+				"include": [],
+				"exclude": [],
+				"parent": 0,
 				"hierarchical": false,
 				"showOnlyTopLevel": false
 			},
