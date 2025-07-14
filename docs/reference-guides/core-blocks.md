@@ -946,6 +946,7 @@ Display the description of categories, tags and custom taxonomies when viewing a
 An advanced block that allows displaying taxonomy terms based on different query parameters and visual configurations. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/terms-query))
 
 -	**Name:** core/terms-query
+-	**Experimental:** true
 -	**Category:** theme
 -	**Supports:** align (full, wide), interactivity, layout, ~~html~~
 -	**Attributes:** namespace, query, queryId, tagName
