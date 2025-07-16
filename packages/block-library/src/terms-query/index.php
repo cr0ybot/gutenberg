@@ -10,11 +10,17 @@
  *
  * @since 6.x.x
  *
+ * @param array    $attributes Block attributes.
  * @param string   $content    Block default content.
+ * @param WP_Block $block      Block instance.
  *
  * @return string Returns the output of the query, structured using the layout defined by the block's inner blocks.
  */
 function render_block_core_terms_query( $attributes, $content, $block ) {
+	if ( ! isset( $attributes['query'] ) || ! isset( $block ) ) {
+		return '';
+	}
+
 	$classnames         = 'wp-block-terms-query';
 	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classnames ) );
 
