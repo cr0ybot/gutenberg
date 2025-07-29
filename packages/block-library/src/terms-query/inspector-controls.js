@@ -49,7 +49,6 @@ export default function TermsQueryInspectorControls( {
 						orderBy: 'name',
 						hideEmpty: true,
 						hierarchical: false,
-						showOnlyTopLevel: false,
 					},
 				} );
 			} }
@@ -113,18 +112,18 @@ export default function TermsQueryInspectorControls( {
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => termQuery.showOnlyTopLevel !== false }
+				hasValue={ () => termQuery.parent === 0 }
 				label={ __( 'Show only top level terms' ) }
-				onDeselect={ () => setQuery( { showOnlyTopLevel: false } ) }
+				onDeselect={ () => setQuery( { parent: undefined } ) }
 				isShownByDefault
 			>
 				<ToggleControl
 					__nextHasNoMarginBottom
 					label={ __( 'Show only top level terms' ) }
-					checked={ termQuery.showOnlyTopLevel }
-					onChange={ ( showOnlyTopLevel ) => {
-						setQuery( { showOnlyTopLevel } );
-						if ( showOnlyTopLevel && termQuery.hierarchical ) {
+					checked={ termQuery.parent === 0 }
+					onChange={ ( showTopLevel ) => {
+						setQuery( { parent: showTopLevel ? 0 : undefined } );
+						if ( showTopLevel && termQuery.hierarchical ) {
 							setQuery( { hierarchical: false } );
 						}
 					} }
@@ -160,11 +159,11 @@ export default function TermsQueryInspectorControls( {
 					checked={ termQuery.hierarchical }
 					onChange={ ( hierarchical ) => {
 						setQuery( { hierarchical } );
-						if ( hierarchical && termQuery.showOnlyTopLevel ) {
-							setQuery( { showOnlyTopLevel: false } );
+						if ( hierarchical && termQuery.parent ) {
+							setQuery( { parent: 0 } );
 						}
 					} }
-					disabled={ !! termQuery.showOnlyTopLevel }
+					disabled={ termQuery.parent === 0 }
 				/>
 			</ToolsPanelItem>
 		</ToolsPanel>

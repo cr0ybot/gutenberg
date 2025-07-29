@@ -24,8 +24,7 @@
 				"include": [],
 				"exclude": [],
 				"parent": 0,
-				"hierarchical": false,
-				"showOnlyTopLevel": false
+				"hierarchical": false
 			}
 		},
 		"tagName": {
