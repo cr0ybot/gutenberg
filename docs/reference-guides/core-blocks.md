@@ -949,7 +949,7 @@ An advanced block that allows displaying taxonomy terms based on different query
 -	**Experimental:** true
 -	**Category:** theme
 -	**Supports:** align (full, wide), interactivity, layout, ~~html~~
--	**Attributes:** namespace, query, queryId, tagName
+-	**Attributes:** namespace, tagName, termQuery, termQueryId
 
 ## Text Columns (deprecated)
 

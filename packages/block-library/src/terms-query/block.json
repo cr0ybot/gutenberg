@@ -9,10 +9,10 @@
 	"keywords": [ "terms", "taxonomy", "categories", "tags", "list" ],
 	"textdomain": "default",
 	"attributes": {
-		"queryId": {
+		"termQueryId": {
 			"type": "number"
 		},
-		"query": {
+		"termQuery": {
 			"type": "object",
 			"default": {
 				"perPage": 100,
@@ -38,8 +38,8 @@
 	},
 	"usesContext": [ "templateSlug" ],
 	"providesContext": {
-		"queryId": "queryId",
-		"query": "query"
+		"termQueryId": "termQueryId",
+		"termQuery": "termQuery"
 	},
 	"supports": {
 		"align": [ "wide", "full" ],

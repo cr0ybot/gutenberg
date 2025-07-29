@@ -27,7 +27,11 @@ export default function TermsQueryContent( {
 	clientId,
 	name,
 } ) {
-	const { queryId, tagName: TagName = 'div', query = {} } = attributes;
+	const {
+		termQueryId,
+		termQuery = {},
+		tagName: TagName = 'div',
+	} = attributes;
 
 	const { __unstableMarkNextChangeAsNotPersistent } =
 		useDispatch( blockEditorStore );
@@ -37,20 +41,20 @@ export default function TermsQueryContent( {
 
 	const setQuery = ( newQuery ) => {
 		setAttributes( {
-			query: {
-				...query,
+			termQuery: {
+				...termQuery,
 				...newQuery,
 			},
 		} );
 	};
 
 	useEffect( () => {
-		if ( ! queryId ) {
+		if ( ! termQueryId ) {
 			__unstableMarkNextChangeAsNotPersistent();
-			setAttributes( { queryId: instanceId } );
+			setAttributes( { termQueryId: instanceId } );
 		}
 	}, [
-		queryId,
+		termQueryId,
 		instanceId,
 		setAttributes,
 		__unstableMarkNextChangeAsNotPersistent,

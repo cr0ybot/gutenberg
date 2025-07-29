@@ -17,7 +17,7 @@
  * @return string Returns the output of the query, structured using the layout defined by the block's inner blocks.
  */
 function render_block_core_terms_query( $attributes, $content, $block ) {
-	if ( ! isset( $attributes['query'] ) || ! isset( $block ) ) {
+	if ( ! isset( $attributes['termQuery'] ) || ! isset( $block ) ) {
 		return '';
 	}
 

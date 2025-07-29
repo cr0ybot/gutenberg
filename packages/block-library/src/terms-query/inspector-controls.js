@@ -21,7 +21,7 @@ export default function TermsQueryInspectorControls( {
 	setQuery,
 	setAttributes,
 } ) {
-	const { query } = attributes;
+	const { termQuery } = attributes;
 	const dropdownMenuProps = useToolsPanelDropdownMenuProps();
 
 	const { taxonomies } = useSelect( ( select ) => {
@@ -43,7 +43,7 @@ export default function TermsQueryInspectorControls( {
 			label={ __( 'Terms Query Settings' ) }
 			resetAll={ () => {
 				setAttributes( {
-					query: {
+					termQuery: {
 						taxonomy: 'category',
 						order: 'asc',
 						orderBy: 'name',
@@ -56,7 +56,7 @@ export default function TermsQueryInspectorControls( {
 			dropdownMenuProps={ dropdownMenuProps }
 		>
 			<ToolsPanelItem
-				hasValue={ () => query.taxonomy !== 'category' }
+				hasValue={ () => termQuery.taxonomy !== 'category' }
 				label={ __( 'Taxonomy' ) }
 				onDeselect={ () => setQuery( { taxonomy: 'category' } ) }
 				isShownByDefault
@@ -66,7 +66,7 @@ export default function TermsQueryInspectorControls( {
 					__next40pxDefaultSize
 					label={ __( 'Taxonomy' ) }
 					options={ taxonomyOptions }
-					value={ query.taxonomy }
+					value={ termQuery.taxonomy }
 					onChange={ ( selectedTaxonomy ) =>
 						setQuery( { taxonomy: selectedTaxonomy } )
 					}
@@ -74,7 +74,7 @@ export default function TermsQueryInspectorControls( {
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => query.order !== 'asc' }
+				hasValue={ () => termQuery.order !== 'asc' }
 				label={ __( 'Order' ) }
 				onDeselect={ () => setQuery( { order: 'asc' } ) }
 				isShownByDefault
@@ -87,13 +87,13 @@ export default function TermsQueryInspectorControls( {
 						{ label: __( 'Ascending' ), value: 'asc' },
 						{ label: __( 'Descending' ), value: 'desc' },
 					] }
-					value={ query.order }
+					value={ termQuery.order }
 					onChange={ ( order ) => setQuery( { order } ) }
 				/>
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => query.orderBy !== 'name' }
+				hasValue={ () => termQuery.orderBy !== 'name' }
 				label={ __( 'Order by' ) }
 				onDeselect={ () => setQuery( { orderBy: 'name' } ) }
 				isShownByDefault
@@ -107,13 +107,13 @@ export default function TermsQueryInspectorControls( {
 						{ label: __( 'Slug' ), value: 'slug' },
 						{ label: __( 'Count' ), value: 'count' },
 					] }
-					value={ query.orderBy }
+					value={ termQuery.orderBy }
 					onChange={ ( orderBy ) => setQuery( { orderBy } ) }
 				/>
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => query.showOnlyTopLevel !== false }
+				hasValue={ () => termQuery.showOnlyTopLevel !== false }
 				label={ __( 'Show only top level terms' ) }
 				onDeselect={ () => setQuery( { showOnlyTopLevel: false } ) }
 				isShownByDefault
@@ -121,19 +121,19 @@ export default function TermsQueryInspectorControls( {
 				<ToggleControl
 					__nextHasNoMarginBottom
 					label={ __( 'Show only top level terms' ) }
-					checked={ query.showOnlyTopLevel }
+					checked={ termQuery.showOnlyTopLevel }
 					onChange={ ( showOnlyTopLevel ) => {
 						setQuery( { showOnlyTopLevel } );
-						if ( showOnlyTopLevel && query.hierarchical ) {
+						if ( showOnlyTopLevel && termQuery.hierarchical ) {
 							setQuery( { hierarchical: false } );
 						}
 					} }
-					disabled={ !! query.hierarchical }
+					disabled={ !! termQuery.hierarchical }
 				/>
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => query.hideEmpty !== true }
+				hasValue={ () => termQuery.hideEmpty !== true }
 				label={ __( 'Show empty terms' ) }
 				onDeselect={ () => setQuery( { hideEmpty: true } ) }
 				isShownByDefault
@@ -141,7 +141,7 @@ export default function TermsQueryInspectorControls( {
 				<ToggleControl
 					__nextHasNoMarginBottom
 					label={ __( 'Show empty terms' ) }
-					checked={ ! query.hideEmpty }
+					checked={ ! termQuery.hideEmpty }
 					onChange={ ( showEmpty ) =>
 						setQuery( { hideEmpty: ! showEmpty } )
 					}
@@ -149,7 +149,7 @@ export default function TermsQueryInspectorControls( {
 			</ToolsPanelItem>
 
 			<ToolsPanelItem
-				hasValue={ () => query.hierarchical !== false }
+				hasValue={ () => termQuery.hierarchical !== false }
 				label={ __( 'Show hierarchy' ) }
 				onDeselect={ () => setQuery( { hierarchical: false } ) }
 				isShownByDefault
@@ -157,14 +157,14 @@ export default function TermsQueryInspectorControls( {
 				<ToggleControl
 					__nextHasNoMarginBottom
 					label={ __( 'Show hierarchy' ) }
-					checked={ query.hierarchical }
+					checked={ termQuery.hierarchical }
 					onChange={ ( hierarchical ) => {
 						setQuery( { hierarchical } );
-						if ( hierarchical && query.showOnlyTopLevel ) {
+						if ( hierarchical && termQuery.showOnlyTopLevel ) {
 							setQuery( { showOnlyTopLevel: false } );
 						}
 					} }
-					disabled={ !! query.showOnlyTopLevel }
+					disabled={ !! termQuery.showOnlyTopLevel }
 				/>
 			</ToolsPanelItem>
 		</ToolsPanel>
