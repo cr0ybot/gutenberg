@@ -4,17 +4,27 @@
 
 ### Bug Fixes
 
+- Fix `filterSortAndPaginate` to handle searching fields that have a type of `array` ([#70785](https://github.com/WordPress/gutenberg/pull/70785)).
+
+### Features
+
+- Support Ctrl + Click / Cmd + Click for multiselecting rows in the Table layout ([#70891](https://github.com/WordPress/gutenberg/pull/70891)).
+
+## 5.0.0 (2025-07-23)
+
+### Bug Fixes
+
 - Fix `filterSortAndPaginate` to handle undefined values for the `is` filter.
 - Fix the background color of the action column if the row is selected
 
 ### Features
 
+- Add support for grouping items by a field in the `grid` layout by introducing a `groupByField` prop in the View object.
 - Add support for free composition in the `DataViews` component by exporting subcomponents: `<DataViews.ViewConfig />`, `<DataViews.Search />`, `<DataViews.Pagination />`, `<DataViews.LayoutSwitcher />`, `<DataViews.Layout />`, `<DataViews.FiltersToggle />`, `<DataViews.Filters />`, `<DataViews.BulkActionToolbar />`.
 - `select`, `text`, `email` controls: add `help` support from the field `description` prop.
 - `text`, `email` Edit control: add `help` support from the field `description` prop.
-
 - Add new Edit controls: `checkbox`, `toggleGroup`. In the `toggleGroup`, if the field elements (options) have a `description`, then the selected option's description will be also rendered.
-- Add new `media`, `boolean`, `email` and `array` field type definitions.
+- Add new `media`, `boolean`, `email`, `array` and `date` field type definitions.
 - Field type definitions are now able to define a default `enableSorting` and `render` function.
 - Pin the actions column on the table view when the width is insufficient.
 - Enhance filter component styles.
@@ -27,7 +37,8 @@
 - Add `label-position-side` classes to labels in the form field layouts. Ensure that labels in the panel view do not align center, and that all side labels are center aligned.
 - Allow readonly fields in DataForm when `readOnly` is set to `true`.
 - Adjust the padding when the component is placed inside a `Card`.
-- Introduce `perPageSizes` to control the available sizes of the items per page
+- Introduce `perPageSizes` to control the available sizes of the items per page.
+- Align media styles in table view with list view for consistency.
 
 ### Breaking Changes
 

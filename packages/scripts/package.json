@@ -1,6 +1,6 @@
 {
 	"name": "@wordpress/scripts",
-	"version": "30.19.0",
+	"version": "30.20.0",
 	"description": "Collection of reusable scripts for WordPress development.",
 	"author": "The WordPress Contributors",
 	"license": "GPL-2.0-or-later",
@@ -96,8 +96,14 @@
 	},
 	"peerDependencies": {
 		"@playwright/test": "^1.51.1",
+		"@wordpress/env": "^10.0.0",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0"
+	},
+	"peerDependenciesMeta": {
+		"@wordpress/env": {
+			"optional": true
+		}
 	},
 	"publishConfig": {
 		"access": "public"

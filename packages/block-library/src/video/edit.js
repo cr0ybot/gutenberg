@@ -23,7 +23,6 @@ import {
 } from '@wordpress/block-editor';
 import { useRef, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { useInstanceId } from '@wordpress/compose';
 import { useDispatch } from '@wordpress/data';
 import { video as icon } from '@wordpress/icons';
 import { store as noticesStore } from '@wordpress/notices';
@@ -31,7 +30,6 @@ import { store as noticesStore } from '@wordpress/notices';
 /**
  * Internal dependencies
  */
-import PosterImage from './poster-image';
 import { createUpgradedEmbedBlock } from '../embed/util';
 import {
 	useUploadMediaFromBlobURL,
@@ -41,6 +39,7 @@ import VideoCommonSettings from './edit-common-settings';
 import TracksEditor from './tracks-editor';
 import Tracks from './tracks';
 import { Caption } from '../utils/caption';
+import PosterImage from '../utils/poster-image';
 
 const ALLOWED_MEDIA_TYPES = [ 'video' ];
 
@@ -52,7 +51,6 @@ function VideoEdit( {
 	insertBlocksAfter,
 	onReplace,
 } ) {
-	const instanceId = useInstanceId( VideoEdit );
 	const videoPlayer = useRef();
 	const { id, controls, poster, src, tracks } = attributes;
 	const [ temporaryURL, setTemporaryURL ] = useState( attributes.blob );
@@ -72,6 +70,7 @@ function VideoEdit( {
 		}
 	}, [ poster ] );
 
+	// TODO: Whether the video was obtained from the media library or was provided by URL, obtain the `videoWidth` and `videoHeight` of the video once its metadata has loaded and persist in the block attributes.
 	function onSelectVideo( media ) {
 		if ( ! media || ! media.url ) {
 			// In this case there was an error
@@ -210,7 +209,7 @@ function VideoEdit( {
 							muted: false,
 							playsInline: false,
 							preload: 'metadata',
-							poster: '',
+							poster: undefined,
 						} );
 					} }
 					dropdownMenuProps={ dropdownMenuProps }
@@ -221,8 +220,11 @@ function VideoEdit( {
 					/>
 					<PosterImage
 						poster={ poster }
-						setAttributes={ setAttributes }
-						instanceId={ instanceId }
+						onChange={ ( posterImage ) =>
+							setAttributes( {
+								poster: posterImage?.url,
+							} )
+						}
 					/>
 				</ToolsPanel>
 			</InspectorControls>

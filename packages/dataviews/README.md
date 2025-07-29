@@ -207,6 +207,7 @@ Properties:
 -   `showMedia`: Whether the media should be shown in the UI. `true` by default.
 -   `showDescription`: Whether the description should be shown in the UI. `true` by default.
 -   `showLevels`: Whether to display the hierarchical levels for the data. `false` by default. See related `getItemLevel` DataView prop.
+-   `groupByField`: The id of the field used for grouping the dataset. So far, only the `grid` layout supports grouping.
 -   `fields`: a list of remaining field `id` that are visible in the UI and the specific order in which they are displayed.
 -   `layout`: config that is specific to a particular layout type.
 
@@ -1163,7 +1164,7 @@ Example:
 
 ### `elements`
 
-List of valid values for a field. If provided, it creates a DataViews' filter for the field. DataForm's edit control will also use these values. (See `Edit` field property.)
+List of valid values for a field. If provided, the field's filter will use these as predefined options instead of using the field's `Edit` function for user input (unless `filterBy` is set to `false`, see below).
 
 -   Type: `array` of objects.
 -   Optional.
@@ -1187,11 +1188,12 @@ Example:
 
 ### `filterBy`
 
-Configuration of the filters.
+Configuration of the filters. By default, fields have filtering enabled using the field's `Edit` function for user input. When `elements` are provided, the filter will use those as predefined options instead. Set to `false` to opt the field out of filtering entirely.
 
--   Type: `object`.
+-   Type: `object` | `boolean`.
 -   Optional.
--   Properties:
+-   If `false`, the field will not be available for filtering.
+-   If an object, it can have the following properties:
     -   `operators`: the list of operators supported by the field. See "operators" below. A filter will support the `isAny` and `isNone` multi-selection operators by default.
     -   `isPrimary`: boolean, optional. Indicates if the filter is primary. A primary filter is always visible and is not listed in the "Add filter" component, except for the list layout where it behaves like a secondary filter.
 
@@ -1250,6 +1252,13 @@ Example:
 	filterBy: {
 		operators: [ `isAny`, `isNone`, `isAll`, `isNotAll` ];
 	}
+}
+```
+
+```js
+// Opt out of filtering entirely.
+{
+	filterBy: false;
 }
 ```
 
