@@ -3,6 +3,7 @@
 		"name": "core/terms-query",
 		"isValid": true,
 		"attributes": {
+			"termQueryId": 0,
 			"termQuery": {
 				"perPage": 100,
 				"pages": 0,
