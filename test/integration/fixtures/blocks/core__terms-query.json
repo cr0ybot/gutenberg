@@ -3,8 +3,7 @@
 		"name": "core/terms-query",
 		"isValid": true,
 		"attributes": {
-			"queryId": 0,
-			"query": {
+			"termQuery": {
 				"perPage": 100,
 				"pages": 0,
 				"taxonomy": "category",
@@ -14,8 +13,7 @@
 				"include": [],
 				"exclude": [],
 				"parent": 0,
-				"hierarchical": false,
-				"showOnlyTopLevel": false
+				"hierarchical": false
 			},
 			"tagName": "div"
 		},
