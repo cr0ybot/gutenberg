@@ -40,7 +40,7 @@ The Terms Query block supports the following query parameters:
 ## Usage Example
 
 ```html
-<!-- wp:terms-query {"termQuery":{"taxonomy":"category","order":"asc","orderBy":"name"}} -->
+<!-- wp:terms-query {"termQueryId":0,"termQuery":{"taxonomy":"category","order":"asc","orderBy":"name"}} -->
 <ul class="wp-block-terms-query">
   <!-- wp:terms-template -->
   <li class="wp-block-term">
@@ -62,7 +62,7 @@ The Terms Query block provides the following context to its inner blocks:
 - `termQueryId` - Unique identifier for the query
 - `termQuery` - Query parameters
 - `termId` - The current term ID
-- `taxonomy` - The taxonomy slug
+- `taxonomy` - The current taxonomy slug
 
 ## Styling
 
