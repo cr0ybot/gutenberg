@@ -46,6 +46,5 @@
 		"layout": true,
 		"interactivity": true
 	},
-	"style": "wp-block-terms-query",
-	"editorStyle": "wp-block-terms-query-editor"
+	"style": "wp-block-terms-query"
 }
