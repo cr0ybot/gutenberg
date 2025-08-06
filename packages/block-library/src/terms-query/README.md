@@ -15,11 +15,11 @@ The Terms Query block is an advanced block that allows displaying taxonomy terms
 The Terms Query block consists of:
 
 1. **Terms Query** (`core/terms-query`) - The main container block
-2. **Terms Template** (`core/terms-template`) - Template for individual terms
+2. **Term Template** (`core/term-template`) - Template for individual terms
 
 ## Default Template
 
-By default, the Terms Template includes:
+By default, the Term Template includes:
 - Term Name
 
 ## Query Parameters
@@ -42,11 +42,11 @@ The Terms Query block supports the following query parameters:
 ```html
 <!-- wp:terms-query {"termQueryId":0,"termQuery":{"taxonomy":"category","order":"asc","orderBy":"name"}} -->
 <ul class="wp-block-terms-query">
-  <!-- wp:terms-template -->
+  <!-- wp:term-template -->
   <li class="wp-block-term">
     <!-- term content -->
   </li>
-  <!-- /wp:terms-template -->
+  <!-- /wp:term-template -->
 </ul>
 <!-- /wp:terms-query -->
 ```
