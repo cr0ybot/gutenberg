@@ -950,6 +950,7 @@ Contains the block elements used to render a taxonomy term, like the name, descr
 -	**Experimental:** true
 -	**Category:** theme
 -	**Ancestor:** core/terms-query
+-	**Allowed Blocks:** core/paragraph, core/heading, core/image, core/button, core/group
 -	**Supports:** align (full, wide), color (background, gradients, link, text), interactivity (clientNavigation), spacing (margin, padding), typography (fontSize, lineHeight), ~~html~~, ~~reusable~~
 
 ## Terms Query

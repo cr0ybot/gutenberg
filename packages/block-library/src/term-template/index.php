@@ -65,7 +65,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		$content = render_block_core_term_template_flat( $terms, $block );
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'wp-block-term-template' ) );
+	$wrapper_attributes = get_block_wrapper_attributes();
 
 	return sprintf(
 		'<ul %s>%s</ul>',
@@ -158,6 +158,7 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 	return $content;
 }
 
+
 /**
  * Renders a single term with its inner blocks.
  *
@@ -176,19 +177,29 @@ function render_block_core_term_template_single( $term, $block ) {
 		$term_id  = $term->term_id;
 		$taxonomy = $term->taxonomy;
 
-		foreach ( $inner_blocks as $inner_block ) {
-			$inner_block->context['termId']   = $term_id;
-			$inner_block->context['taxonomy'] = $taxonomy;
+		$filter_block_context = static function ( $context ) use ( $term_id, $taxonomy ) {
+			$context['termId']   = $term_id;
+			$context['taxonomy'] = $taxonomy;
+			return $context;
+		};
 
-			$block_content .= $inner_block->render( array( 'dynamic' => true ) );
+		add_filter( 'render_block_context', $filter_block_context, 1 );
+
+		foreach ( $inner_blocks as $inner_block ) {
+			if ( method_exists( $inner_block, 'refresh_context_dependents' ) ) {
+				// WP_Block::refresh_context_dependents() was introduced in WordPress 6.8.
+				$inner_block->refresh_context_dependents();
+				$block_content .= $inner_block->render( array( 'dynamic' => true ) );
+			} else {
+				$block_content = ( new WP_Block( $inner_block->parsed_block ) )->render( array( 'dynamic' => false ) );
+			}
 		}
+		remove_filter( 'render_block_context', $filter_block_context, 1 );
 	}
 
 	$term_classes = implode( ' ', array( 'wp-block-term', 'term-' . $term->term_id ) );
 
-	$term_name = esc_html( $term->name );
-
-	return '<li class="' . esc_attr( $term_classes ) . '">' . $term_name . $block_content . '</li>';
+	return '<li class="' . esc_attr( $term_classes ) . '">' . $block_content . '</li>';
 }
 
 /**

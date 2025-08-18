@@ -15,14 +15,67 @@ import {
 import { ToolbarGroup } from '@wordpress/components';
 import { useEntityRecords } from '@wordpress/core-data';
 
-const TEMPLATE = [];
+const TEMPLATE = [
+	[
+		'core/group',
+		{
+			layout: {
+				type: 'flex',
+				orientation: 'horizontal',
+			},
+			style: {
+				spacing: {
+					blockGap: '0.5rem',
+				},
+			},
+			metadata: {
+				name: __( 'Term Name with Count' ),
+			},
+		},
+		[
+			[
+				'core/paragraph',
+				{
+					metadata: {
+						name: __( 'Term Name' ),
+						bindings: {
+							content: {
+								source: 'core/term-data',
+								args: {
+									key: 'name',
+								},
+							},
+						},
+					},
+				},
+			],
+			[
+				'core/paragraph',
+				{
+					placeholder: __( '(count)' ),
+					metadata: {
+						name: __( 'Term Count' ),
+						bindings: {
+							content: {
+								source: 'core/term-data',
+								args: {
+									key: 'count',
+								},
+							},
+						},
+					},
+				},
+			],
+		],
+	],
+];
 
-function TermTemplateInnerBlocks( { classList, term } ) {
+function TermTemplateInnerBlocks( { classList } ) {
 	const innerBlocksProps = useInnerBlocksProps(
 		{ className: `wp-block-term ${ classList }` },
 		{ template: TEMPLATE, __unstableDisableLayoutClassNames: true }
 	);
-	return <li { ...innerBlocksProps }>{ term?.name }</li>;
+	return <li { ...innerBlocksProps } />;
 }
 
 function TermTemplateBlockPreview( {
@@ -31,7 +84,6 @@ function TermTemplateBlockPreview( {
 	classList,
 	isHidden,
 	setActiveBlockContextId,
-	termName,
 } ) {
 	const blockPreviewProps = useBlockPreview( {
 		blocks,
@@ -57,9 +109,7 @@ function TermTemplateBlockPreview( {
 			onClick={ handleOnClick }
 			onKeyPress={ handleOnClick }
 			style={ style }
-		>
-			{ termName }
-		</li>
+		/>
 	);
 }
 
@@ -176,13 +226,12 @@ export default function TermTemplateEdit( {
 				taxonomy,
 				termId: term.id,
 				classList: `term-${ term.id }`,
+				termData: term,
 			} ) ),
 		[ filteredTerms, taxonomy ]
 	);
 
-	const blockProps = useBlockProps( {
-		className: 'wp-block-term-template',
-	} );
+	const blockProps = useBlockProps();
 
 	if ( isResolving ) {
 		return (
@@ -211,6 +260,7 @@ export default function TermTemplateEdit( {
 			taxonomy,
 			termId: term.id,
 			classList: `term-${ term.id }`,
+			termData: term,
 		};
 
 		return (
@@ -222,7 +272,6 @@ export default function TermTemplateEdit( {
 				) ? (
 					<TermTemplateInnerBlocks
 						classList={ blockContext.classList }
-						term={ term }
 					/>
 				) : null }
 				<MemoizedTermTemplateBlockPreview
@@ -235,7 +284,6 @@ export default function TermTemplateEdit( {
 						activeBlockContextId,
 						blockContexts
 					) }
-					termName={ term.name }
 				/>
 			</BlockContextProvider>
 		);
@@ -261,9 +309,6 @@ export default function TermTemplateEdit( {
 				) ? (
 					<TermTemplateInnerBlocks
 						classList={ blockContext.classList }
-						term={ filteredTerms.find(
-							( t ) => t.id === blockContext.termId
-						) }
 					/>
 				) : null }
 				<MemoizedTermTemplateBlockPreview
@@ -276,11 +321,6 @@ export default function TermTemplateEdit( {
 						activeBlockContextId,
 						blockContexts
 					) }
-					termName={
-						filteredTerms.find(
-							( t ) => t.id === blockContext.termId
-						)?.name
-					}
 				/>
 			</BlockContextProvider>
 		) );

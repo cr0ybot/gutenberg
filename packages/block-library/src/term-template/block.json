@@ -8,7 +8,7 @@
 	"ancestor": [ "core/terms-query" ],
 	"description": "Contains the block elements used to render a taxonomy term, like the name, description, and more.",
 	"textdomain": "default",
-	"usesContext": [ "termQueryId", "termQuery", "templateSlug", "termName" ],
+	"usesContext": [ "termQuery" ],
 	"supports": {
 		"reusable": false,
 		"html": false,
@@ -48,6 +48,12 @@
 			"style": true
 		}
 	},
-	"allowedBlocks": [],
+	"allowedBlocks": [
+		"core/paragraph",
+		"core/heading",
+		"core/image",
+		"core/button",
+		"core/group"
+	],
 	"style": "wp-block-term-template"
 }
