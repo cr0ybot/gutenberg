@@ -40,9 +40,7 @@ function createDataFields( termDataValues, idValue ) {
 		},
 		count: {
 			label: __( 'Count' ),
-			value: termDataValues?.count
-				? `(${ termDataValues.count })`
-				: `(${ termDataValues?.count })`,
+			value: `(${ termDataValues?.count ?? 0 })`,
 			type: 'string',
 		},
 	};
