@@ -8,7 +8,7 @@
 /**
  * Renders the `core/terms-query` block on the server.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param array    $attributes Block attributes.
  * @param string   $content    Block default content.
@@ -35,7 +35,7 @@ function render_block_core_terms_query( $attributes, $content, $block ) {
 /**
  * Registers the `core/terms-query` block on the server.
  *
- * @since 6.x.x
+ * @since 6.9.0
  */
 function register_block_core_terms_query() {
 	register_block_type_from_metadata(

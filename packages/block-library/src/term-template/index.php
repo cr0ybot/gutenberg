@@ -8,7 +8,7 @@
 /**
  * Renders the `core/term-template` block on the server.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param array    $attributes Block attributes.
  * @param string   $content    Block default content.
@@ -77,7 +77,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 /**
  * Renders terms in a flat list structure.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param array    $terms Array of WP_Term objects.
  * @param WP_Block $block Block instance.
@@ -95,7 +95,7 @@ function render_block_core_term_template_flat( $terms, $block ) {
 /**
  * Renders terms in a hierarchical structure.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param array    $terms Array of WP_Term objects.
  * @param WP_Block $block Block instance.
@@ -123,7 +123,7 @@ function render_block_core_term_template_hierarchical( $terms, $block, $base_que
 /**
  * Gets and renders children of a specific term.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param int      $parent_term_id Parent term ID.
  * @param WP_Block $block          Block instance.
@@ -162,7 +162,7 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 /**
  * Renders a single term with its inner blocks.
  *
- * @since 6.x.x
+ * @since 6.9.0
  *
  * @param WP_Term  $term  Term object.
  * @param WP_Block $block Block instance.
@@ -205,7 +205,7 @@ function render_block_core_term_template_single( $term, $block ) {
 /**
  * Registers the `core/term-template` block on the server.
  *
- * @since 6.x.x
+ * @since 6.9.0
  */
 function register_block_core_term_template() {
 	register_block_type_from_metadata(
