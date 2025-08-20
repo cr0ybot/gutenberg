@@ -188,6 +188,7 @@ export default function TermTemplateEdit( {
 			hideEmpty,
 			hierarchical,
 			parent,
+			perPage = 100,
 		} = {},
 	},
 } ) {
@@ -197,6 +198,7 @@ export default function TermTemplateEdit( {
 		order,
 		orderby: orderBy,
 		hide_empty: hideEmpty,
+		per_page: perPage,
 	};
 
 	const { records: terms, isResolving } = useEntityRecords(
