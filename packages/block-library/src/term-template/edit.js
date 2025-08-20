@@ -237,19 +237,17 @@ export default function TermTemplateEdit( {
 
 	if ( isResolving ) {
 		return (
-			<div { ...blockProps }>
-				<ul>
-					<li className="wp-block-term term-loading">
-						<div className="term-loading-placeholder" />
-					</li>
-					<li className="wp-block-term term-loading">
-						<div className="term-loading-placeholder" />
-					</li>
-					<li className="wp-block-term term-loading">
-						<div className="term-loading-placeholder" />
-					</li>
-				</ul>
-			</div>
+			<ul { ...blockProps }>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+			</ul>
 		);
 	}
 
@@ -334,9 +332,7 @@ export default function TermTemplateEdit( {
 				<ToolbarGroup />
 			</BlockControls>
 
-			<div { ...blockProps }>
-				<ul>{ renderTerms() }</ul>
-			</div>
+			<ul { ...blockProps }>{ renderTerms() }</ul>
 		</>
 	);
 }
