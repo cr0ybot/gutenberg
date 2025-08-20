@@ -7,8 +7,14 @@ import type { ReactNode, ComponentProps, ReactElement } from 'react';
  * WordPress dependencies
  */
 import { __experimentalHStack as HStack } from '@wordpress/components';
-import { useContext, useMemo, useRef, useState } from '@wordpress/element';
-import { useResizeObserver } from '@wordpress/compose';
+import {
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@wordpress/element';
+import { useResizeObserver, throttle } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -45,6 +51,7 @@ type DataViewsProps< Item > = {
 	paginationInfo: {
 		totalItems: number;
 		totalPages: number;
+		infiniteScrollHandler?: () => void;
 	};
 	defaultLayouts: SupportedLayouts;
 	selection?: string[];
@@ -59,7 +66,12 @@ type DataViewsProps< Item > = {
 	header?: ReactNode;
 	getItemLevel?: ( item: Item ) => number;
 	children?: ReactNode;
-	perPageSizes?: number[];
+	config?:
+		| false
+		| {
+				perPageSizes: number[];
+		  };
+	empty?: ReactNode;
 } & ( Item extends ItemWithId
 	? { getItemId?: ( item: Item ) => string }
 	: { getItemId: ( item: Item ) => string } );
@@ -78,7 +90,7 @@ function DefaultUI( {
 	search = true,
 	searchLabel = undefined,
 }: DefaultUIProps ) {
-	const { isShowingFilter } = useContext( DataViewsContext );
+	const { isShowingFilter, config } = useContext( DataViewsContext );
 	return (
 		<>
 			<HStack
@@ -95,14 +107,16 @@ function DefaultUI( {
 					{ search && <DataViewsSearch label={ searchLabel } /> }
 					<FiltersToggle />
 				</HStack>
-				<HStack
-					spacing={ 1 }
-					expanded={ false }
-					style={ { flexShrink: 0 } }
-				>
-					<DataViewsViewConfig />
-					{ header }
-				</HStack>
+				{ ( config || header ) && (
+					<HStack
+						spacing={ 1 }
+						expanded={ false }
+						style={ { flexShrink: 0 } }
+					>
+						config && <DataViewsViewConfig />
+						{ header }
+					</HStack>
+				) }
 			</HStack>
 			{ isShowingFilter && (
 				<DataViewsFilters className="dataviews-filters__container" />
@@ -133,8 +147,10 @@ function DataViews< Item >( {
 	isItemClickable = defaultIsItemClickable,
 	header,
 	children,
-	perPageSizes = [ 10, 20, 50, 100 ],
+	config = { perPageSizes: [ 10, 20, 50, 100 ] },
+	empty,
 }: DataViewsProps< Item > ) {
+	const { infiniteScrollHandler } = paginationInfo;
 	const containerRef = useRef< HTMLDivElement | null >( null );
 	const [ containerWidth, setContainerWidth ] = useState( 0 );
 	const resizeObserverRef = useResizeObserver(
@@ -168,9 +184,49 @@ function DataViews< Item >( {
 	}, [ selection, data, getItemId ] );
 
 	const filters = useFilters( _fields, view );
-	const [ isShowingFilter, setIsShowingFilter ] = useState< boolean >( () =>
-		( filters || [] ).some( ( filter ) => filter.isPrimary )
+	const hasPrimaryOrLockedFilters = useMemo(
+		() =>
+			( filters || [] ).some(
+				( filter ) => filter.isPrimary || filter.isLocked
+			),
+		[ filters ]
 	);
+	const [ isShowingFilter, setIsShowingFilter ] = useState< boolean >(
+		hasPrimaryOrLockedFilters
+	);
+
+	useEffect( () => {
+		if ( hasPrimaryOrLockedFilters && ! isShowingFilter ) {
+			setIsShowingFilter( true );
+		}
+	}, [ hasPrimaryOrLockedFilters, isShowingFilter ] );
+
+	// Attach scroll event listener for infinite scroll
+	useEffect( () => {
+		if ( ! view.infiniteScrollEnabled || ! containerRef.current ) {
+			return;
+		}
+
+		const handleScroll = throttle( ( event: unknown ) => {
+			const target = ( event as Event ).target as HTMLElement;
+			const scrollTop = target.scrollTop;
+			const scrollHeight = target.scrollHeight;
+			const clientHeight = target.clientHeight;
+
+			// Check if user has scrolled near the bottom
+			if ( scrollTop + clientHeight >= scrollHeight - 100 ) {
+				infiniteScrollHandler?.();
+			}
+		}, 100 ); // Throttle to 100ms
+
+		const container = containerRef.current;
+		container.addEventListener( 'scroll', handleScroll );
+
+		return () => {
+			container.removeEventListener( 'scroll', handleScroll );
+			handleScroll.cancel(); // Cancel any pending throttled calls
+		};
+	}, [ infiniteScrollHandler, view.infiniteScrollEnabled ] );
 
 	return (
 		<DataViewsContext.Provider
@@ -198,7 +254,9 @@ function DataViews< Item >( {
 				filters,
 				isShowingFilter,
 				setIsShowingFilter,
-				perPageSizes,
+				config,
+				empty,
+				hasInfiniteScrollHandler: !! infiniteScrollHandler,
 			} }
 		>
 			<div className="dataviews-wrapper" ref={ containerRef }>

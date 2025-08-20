@@ -2,14 +2,31 @@
 
 ## Unreleased
 
+### Bug fixes
+
+-   `MenuItem`: make accessible when disabled ([#71251](https://github.com/WordPress/gutenberg/pull/71251)).
+
+### Enhancement
+
+-   Upgrade `gradient-parser` to version `1.1.1` to support HSL/HSLA color, CSS variables, and `calc()` expressions ([#71186](https://github.com/WordPress/gutenberg/pull/71186)).
+
+### Internal
+
+-   Validated form controls: Add support for async validation. This is a breaking API change that splits the `customValidator` prop into an `onValidate` callback and a `customValidity` object. ([#71184](https://github.com/WordPress/gutenberg/pull/71184)).
+-   `DateCalendar`, `DateRangeCalendar`: use `px` instead of `rem` units. ([#71248](https://github.com/WordPress/gutenberg/pull/71248)).
+
+## 30.1.0 (2025-08-07)
+
 ### Enhancement
 
 -   `ColorPicker`: Improve color picker slider focus styles for better keyboard navigation accessibility ([#70146](https://github.com/WordPress/gutenberg/pull/70146)).
+-   `Button`: Update the disabled state for the Primary button to be less emphasized, to avoid confusing it for enabled. ([#70674](https://github.com/WordPress/gutenberg/pull/70674)).
 
 ### Bug Fixes
 
 -   `TextareaControl`: Add missing component CSS classname ([#70930](https://github.com/WordPress/gutenberg/pull/70930)).
 -   `PaletteEdit`: Fill available space with input field ([#70935](https://github.com/WordPress/gutenberg/pull/70935)).
+-   `DatePicker`: Fix day label alignment for start and end of week ([#71005](https://github.com/WordPress/gutenberg/pull/71005)).
 
 ### Enhancement
 
@@ -17,8 +34,8 @@
 
 ### Internal
 
--	`RangeControl`: Add placement prop to replace position ([#70326](https://github.com/WordPress/gutenberg/pull/70326)).
-- Expose `ValidatedNumberControl`, `ValidatedTextControl`, and `ValidatedToggleControl` via privateAPIs. ([#70901](https://github.com/WordPress/gutenberg/pull/70901)).
+-   `RangeControl`: Add placement prop to replace position ([#70326](https://github.com/WordPress/gutenberg/pull/70326)).
+-   Expose `ValidatedNumberControl`, `ValidatedTextControl`, and `ValidatedToggleControl` via privateAPIs. ([#70901](https://github.com/WordPress/gutenberg/pull/70901)).
 
 ## 30.0.0 (2025-07-23)
 
@@ -36,7 +53,6 @@
 -   `SelectControl`: Fix font-size for medium screens to ensure consistency with other inputs ([#70619](https://github.com/WordPress/gutenberg/pull/70619)).
 -   `SelectControl`: Move classnames to the root ([#70643](https://github.com/WordPress/gutenberg/pull/70643)).
 -   `Autocomplete`: Prevent text cursor position loss when clicking to insert an item ([#70660](https://github.com/WordPress/gutenberg/pull/70660)).
-
 
 ### Internal
 

@@ -67,7 +67,11 @@ function ColumnPrimary< Item >( {
 					/>
 				</ItemClickWrapper>
 			) }
-			<VStack spacing={ 0 }>
+			<VStack
+				spacing={ 0 }
+				alignment="flex-start"
+				className="dataviews-view-table__primary-column-content"
+			>
 				{ titleField && (
 					<ItemClickWrapper
 						item={ item }

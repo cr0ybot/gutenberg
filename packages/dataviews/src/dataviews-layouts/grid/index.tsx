@@ -13,6 +13,7 @@ import {
 	Spinner,
 	Flex,
 	FlexItem,
+	Tooltip,
 	privateApis as componentsPrivateApis,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -64,6 +65,7 @@ interface GridItemProps< Item > {
 	config: {
 		sizes: string;
 	};
+	posinset?: number;
 }
 
 function GridItem< Item >( {
@@ -83,8 +85,14 @@ function GridItem< Item >( {
 	badgeFields,
 	hasBulkActions,
 	config,
+	posinset,
 }: GridItemProps< Item > ) {
-	const { showTitle = true, showMedia = true, showDescription = true } = view;
+	const {
+		showTitle = true,
+		showMedia = true,
+		showDescription = true,
+		infiniteScrollEnabled,
+	} = view;
 	const hasBulkAction = useHasAPossibleBulkAction( actions, item );
 	const id = getItemId( item );
 	const instanceId = useInstanceId( GridItem );
@@ -117,6 +125,7 @@ function GridItem< Item >( {
 			};
 		}
 	}
+	const { paginationInfo } = useContext( DataViewsContext );
 
 	return (
 		<VStack
@@ -139,6 +148,11 @@ function GridItem< Item >( {
 					);
 				}
 			} }
+			role={ infiniteScrollEnabled ? 'article' : undefined }
+			aria-setsize={
+				infiniteScrollEnabled ? paginationInfo.totalItems : undefined
+			}
+			aria-posinset={ posinset }
 		>
 			{ showMedia && renderedMediaField && (
 				<ItemClickWrapper
@@ -227,9 +241,11 @@ function GridItem< Item >( {
 									direction="row"
 								>
 									<>
-										<FlexItem className="dataviews-view-grid__field-name">
-											{ field.header }
-										</FlexItem>
+										<Tooltip text={ field.label }>
+											<FlexItem className="dataviews-view-grid__field-name">
+												{ field.header }
+											</FlexItem>
+										</Tooltip>
 										<FlexItem
 											className="dataviews-view-grid__field-value"
 											style={ { maxHeight: 'none' } }
@@ -263,6 +279,7 @@ function ViewGrid< Item >( {
 	selection,
 	view,
 	className,
+	empty,
 }: ViewGridProps< Item > ) {
 	const { resizeObserverRef } = useContext( DataViewsContext );
 	const titleField = fields.find(
@@ -320,6 +337,8 @@ function ViewGrid< Item >( {
 				return groups;
 		  }, new Map< string, typeof data >() )
 		: null;
+
+	const isInfiniteScroll = view.infiniteScrollEnabled && ! dataByGroup;
 
 	return (
 		<>
@@ -408,8 +427,9 @@ function ViewGrid< Item >( {
 						} }
 						aria-busy={ isLoading }
 						ref={ resizeObserverRef }
+						role={ isInfiniteScroll ? 'feed' : undefined }
 					>
-						{ data.map( ( item ) => {
+						{ data.map( ( item, index ) => {
 							return (
 								<GridItem
 									key={ getItemId( item ) }
@@ -431,6 +451,9 @@ function ViewGrid< Item >( {
 									config={ {
 										sizes: size,
 									} }
+									posinset={
+										isInfiniteScroll ? index + 1 : undefined
+									}
 								/>
 							);
 						} ) }
@@ -446,10 +469,15 @@ function ViewGrid< Item >( {
 							'dataviews-no-results': ! isLoading,
 						} ) }
 					>
-						<p>{ isLoading ? <Spinner /> : __( 'No results' ) }</p>
+						<p>{ isLoading ? <Spinner /> : empty }</p>
 					</div>
 				)
 			}
+			{ hasData && isLoading && (
+				<p className="dataviews-loading-more">
+					<Spinner />
+				</p>
+			) }
 		</>
 	);
 }
