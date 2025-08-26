@@ -2,18 +2,23 @@
  * WordPress dependencies
  */
 import { memo, useMemo, useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
 	BlockControls,
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
+	__experimentalBlockVariationPicker as BlockVariationPicker,
 	useBlockProps,
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { ToolbarGroup } from '@wordpress/components';
 import { useEntityRecords } from '@wordpress/core-data';
+import {
+	createBlocksFromInnerBlocksTemplate,
+	store as blocksStore,
+} from '@wordpress/blocks';
 
 const TEMPLATE = [
 	[
@@ -70,11 +75,17 @@ const TEMPLATE = [
 	],
 ];
 
-function TermTemplateInnerBlocks( { classList } ) {
+function TermTemplateInnerBlocks( { classList, blockLayout = 'list' } ) {
 	const innerBlocksProps = useInnerBlocksProps(
 		{ className: `wp-block-term ${ classList }` },
 		{ template: TEMPLATE, __unstableDisableLayoutClassNames: true }
 	);
+
+	// Use different HTML element based on layout
+	if ( blockLayout === 'grid' ) {
+		return <div { ...innerBlocksProps } />;
+	}
+
 	return <li { ...innerBlocksProps } />;
 }
 
@@ -84,6 +95,7 @@ function TermTemplateBlockPreview( {
 	classList,
 	isHidden,
 	setActiveBlockContextId,
+	blockLayout = 'list',
 } ) {
 	const blockPreviewProps = useBlockPreview( {
 		blocks,
@@ -99,6 +111,21 @@ function TermTemplateBlockPreview( {
 	const style = {
 		display: isHidden ? 'none' : undefined,
 	};
+
+	// Use different HTML element based on layout
+	if ( blockLayout === 'grid' ) {
+		return (
+			<div
+				{ ...blockPreviewProps }
+				tabIndex={ 0 }
+				// eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+				role="button"
+				onClick={ handleOnClick }
+				onKeyPress={ handleOnClick }
+				style={ style }
+			/>
+		);
+	}
 
 	return (
 		<li
@@ -147,20 +174,23 @@ function buildTermsTree( terms ) {
 /**
  * Renders a single term node and its children recursively.
  *
- * @param {Object}   termNode   Term node with term object and children.
- * @param {Function} renderTerm Function to render individual terms.
+ * @param {Object}   termNode    Term node with term object and children.
+ * @param {Function} renderTerm  Function to render individual terms.
+ * @param {string}   blockLayout Layout type ('list' or 'grid').
  * @return {JSX.Element} Rendered term node with children.
  */
-function renderTermNode( termNode, renderTerm ) {
+function renderTermNode( termNode, renderTerm, blockLayout = 'list' ) {
+	const ContainerElement = blockLayout === 'grid' ? 'div' : 'ul';
+
 	return (
 		<>
 			{ renderTerm( termNode.term ) }
 			{ termNode.children.length > 0 && (
-				<ul>
+				<ContainerElement>
 					{ termNode.children.map( ( child ) =>
-						renderTermNode( child, renderTerm )
+						renderTermNode( child, renderTerm, blockLayout )
 					) }
-				</ul>
+				</ContainerElement>
 			) }
 		</>
 	);
@@ -180,6 +210,8 @@ function isActiveTerm( termId, activeBlockContextId, blockContexts ) {
 
 export default function TermTemplateEdit( {
 	clientId,
+	attributes,
+	setAttributes,
 	context: {
 		termQuery: {
 			taxonomy,
@@ -193,6 +225,7 @@ export default function TermTemplateEdit( {
 	},
 } ) {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
+	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 
 	const queryArgs = {
 		order,
@@ -215,10 +248,21 @@ export default function TermTemplateEdit( {
 		return terms.filter( ( term ) => ! term.parent );
 	}, [ terms, parent ] );
 
-	const { blocks } = useSelect(
-		( select ) => ( {
-			blocks: select( blockEditorStore ).getBlocks( clientId ),
-		} ),
+	const { blocks, variations, defaultVariation } = useSelect(
+		( select ) => {
+			const { getBlocks } = select( blockEditorStore );
+			const { getBlockVariations, getDefaultBlockVariation } =
+				select( blocksStore );
+
+			return {
+				blocks: getBlocks( clientId ),
+				variations: getBlockVariations( 'core/term-template', 'block' ),
+				defaultVariation: getDefaultBlockVariation(
+					'core/term-template',
+					'block'
+				),
+			};
+		},
 		[ clientId ]
 	);
 
@@ -234,6 +278,37 @@ export default function TermTemplateEdit( {
 	);
 
 	const blockProps = useBlockProps();
+
+	// Show variation picker if no blocks exist
+	if ( ! blocks?.length ) {
+		return (
+			<div { ...blockProps }>
+				<BlockVariationPicker
+					icon="layout"
+					label={ __( 'Term Template' ) }
+					variations={ variations }
+					instructions={ __(
+						'Choose a layout for displaying terms:'
+					) }
+					onSelect={ ( nextVariation = defaultVariation ) => {
+						if ( nextVariation.attributes ) {
+							setAttributes( nextVariation.attributes );
+						}
+						if ( nextVariation.innerBlocks ) {
+							replaceInnerBlocks(
+								clientId,
+								createBlocksFromInnerBlocksTemplate(
+									nextVariation.innerBlocks
+								),
+								true
+							);
+						}
+					} }
+					allowSkip
+				/>
+			</div>
+		);
+	}
 
 	if ( isResolving ) {
 		return (
@@ -272,6 +347,7 @@ export default function TermTemplateEdit( {
 				) ? (
 					<TermTemplateInnerBlocks
 						classList={ blockContext.classList }
+						blockLayout={ attributes?.blockLayout || 'list' }
 					/>
 				) : null }
 				<MemoizedTermTemplateBlockPreview
@@ -284,6 +360,7 @@ export default function TermTemplateEdit( {
 						activeBlockContextId,
 						blockContexts
 					) }
+					blockLayout={ attributes?.blockLayout || 'list' }
 				/>
 			</BlockContextProvider>
 		);
@@ -293,7 +370,11 @@ export default function TermTemplateEdit( {
 		if ( hierarchical ) {
 			const termsTree = buildTermsTree( filteredTerms );
 			return termsTree.map( ( termNode ) =>
-				renderTermNode( termNode, renderTerm )
+				renderTermNode(
+					termNode,
+					renderTerm,
+					attributes?.blockLayout || 'list'
+				)
 			);
 		}
 
@@ -309,6 +390,7 @@ export default function TermTemplateEdit( {
 				) ? (
 					<TermTemplateInnerBlocks
 						classList={ blockContext.classList }
+						blockLayout={ attributes?.blockLayout || 'list' }
 					/>
 				) : null }
 				<MemoizedTermTemplateBlockPreview
@@ -321,10 +403,14 @@ export default function TermTemplateEdit( {
 						activeBlockContextId,
 						blockContexts
 					) }
+					blockLayout={ attributes?.blockLayout || 'list' }
 				/>
 			</BlockContextProvider>
 		) );
 	};
+
+	const blockLayout = attributes?.blockLayout || 'list';
+	const ContainerElement = blockLayout === 'grid' ? 'div' : 'ul';
 
 	return (
 		<>
@@ -332,7 +418,9 @@ export default function TermTemplateEdit( {
 				<ToolbarGroup />
 			</BlockControls>
 
-			<ul { ...blockProps }>{ renderTerms() }</ul>
+			<div { ...blockProps }>
+				<ContainerElement>{ renderTerms() }</ContainerElement>
+			</div>
 		</>
 	);
 }

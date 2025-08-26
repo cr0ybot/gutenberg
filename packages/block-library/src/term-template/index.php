@@ -66,7 +66,18 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 	}
 
 	$wrapper_attributes = get_block_wrapper_attributes();
+	$block_layout = $attributes['blockLayout'] ?? 'list';
 
+	// Use different HTML structure based on layout
+	if ( $block_layout === 'grid' ) {
+		return sprintf(
+			'<div %s>%s</div>',
+			$wrapper_attributes,
+			$content
+		);
+	}
+
+	// Default list layout
 	return sprintf(
 		'<ul %s>%s</ul>',
 		$wrapper_attributes,
@@ -105,13 +116,19 @@ function render_block_core_term_template_flat( $terms, $block ) {
  */
 function render_block_core_term_template_hierarchical( $terms, $block, $base_query_args ) {
 	$content = '';
+	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $terms as $term ) {
 		$term_content     = render_block_core_term_template_single( $term, $block );
 		$children_content = render_block_core_term_template_get_children( $term->term_id, $block, $base_query_args );
 
 		if ( ! empty( $children_content ) ) {
-			$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
+			// Use appropriate wrapper based on layout
+			if ( $block_layout === 'grid' ) {
+				$term_content = str_replace( '</div>', '<div>' . $children_content . '</div></div>', $term_content );
+			} else {
+				$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
+			}
 		}
 
 		$content .= $term_content;
@@ -143,13 +160,19 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 	}
 
 	$content = '';
+	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $child_terms as $child_term ) {
 		$term_content     = render_block_core_term_template_single( $child_term, $block );
 		$children_content = render_block_core_term_template_get_children( $child_term->term_id, $block, $base_query_args );
 
 		if ( ! empty( $children_content ) ) {
-			$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
+			// Use appropriate wrapper based on layout
+			if ( $block_layout === 'grid' ) {
+				$term_content = str_replace( '</div>', '<div>' . $children_content . '</div></div>', $term_content );
+			} else {
+				$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
+			}
 		}
 
 		$content .= $term_content;
@@ -198,7 +221,14 @@ function render_block_core_term_template_single( $term, $block ) {
 	}
 
 	$term_classes = implode( ' ', array( 'wp-block-term', 'term-' . $term->term_id ) );
+	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
+	// Use different HTML element based on layout
+	if ( $block_layout === 'grid' ) {
+		return '<div class="' . esc_attr( $term_classes ) . '">' . $block_content . '</div>';
+	}
+
+	// Default list layout
 	return '<li class="' . esc_attr( $term_classes ) . '">' . $block_content . '</li>';
 }
 
