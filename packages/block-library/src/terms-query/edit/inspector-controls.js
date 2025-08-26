@@ -56,7 +56,7 @@ export default function TermsQueryInspectorControls( {
 					resetAll={ () => {
 						setAttributes( {
 							termQuery: {
-								taxonomy: 'category',
+								taxonomy: '',
 								order: 'asc',
 								orderBy: 'name',
 								hideEmpty: true,
@@ -69,11 +69,9 @@ export default function TermsQueryInspectorControls( {
 					dropdownMenuProps={ dropdownMenuProps }
 				>
 					<ToolsPanelItem
-						hasValue={ () => termQuery.taxonomy !== 'category' }
+						hasValue={ () => termQuery.taxonomy !== '' }
 						label={ __( 'Taxonomy' ) }
-						onDeselect={ () =>
-							setQuery( { taxonomy: 'category' } )
-						}
+						onDeselect={ () => setQuery( { taxonomy: '' } ) }
 						isShownByDefault
 					>
 						<SelectControl

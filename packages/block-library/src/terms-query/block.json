@@ -23,7 +23,7 @@
 			"default": {
 				"perPage": 10,
 				"pages": 0,
-				"taxonomy": "category",
+				"taxonomy": "",
 				"order": "asc",
 				"orderBy": "name",
 				"hideEmpty": true,
