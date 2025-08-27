@@ -276,6 +276,14 @@ export default function TermTemplateEdit( {
 
 	const blockLayout = attributes?.blockLayout || 'list';
 	const columnCount = attributes?.columnCount || 3;
+
+	// Switch to list if hierarchical is true and grid is selected.
+	useMemo( () => {
+		if ( hierarchical && blockLayout === 'grid' ) {
+			setAttributes( { blockLayout: 'list' } );
+		}
+	}, [ hierarchical, blockLayout, setAttributes ] );
+
 	const blockProps = useBlockProps( {
 		className: blockLayout === 'grid' ? `columns-${ columnCount }` : '',
 	} );
@@ -291,7 +299,7 @@ export default function TermTemplateEdit( {
 		[ filteredTerms, taxonomy ]
 	);
 
-	// Show variation picker if no blocks exist
+	// Show variation picker if no blocks exist.
 	if ( ! blocks?.length ) {
 		return (
 			<div { ...blockProps }>
@@ -389,6 +397,13 @@ export default function TermTemplateEdit( {
 					<ToggleGroupControl
 						label={ __( 'Layout' ) }
 						value={ attributes?.blockLayout || 'list' }
+						help={
+							hierarchical
+								? __(
+										'Grid layout is not available if the "Show hierarchy" option is enabled.'
+								  )
+								: ''
+						}
 						onChange={ ( value ) =>
 							setAttributes( { blockLayout: value } )
 						}
@@ -403,6 +418,7 @@ export default function TermTemplateEdit( {
 						<ToggleGroupControlOption
 							value="grid"
 							label={ __( 'Grid' ) }
+							disabled={ hierarchical }
 						/>
 					</ToggleGroupControl>
 					<div
