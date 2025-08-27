@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { memo, useMemo, useState } from '@wordpress/element';
+import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
@@ -278,7 +278,7 @@ export default function TermTemplateEdit( {
 	const columnCount = attributes?.columnCount || 3;
 
 	// Switch to list if hierarchical is true and grid is selected.
-	useMemo( () => {
+	useEffect( () => {
 		if ( hierarchical && blockLayout === 'grid' ) {
 			setAttributes( { blockLayout: 'list' } );
 		}
