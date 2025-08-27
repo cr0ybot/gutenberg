@@ -17,7 +17,7 @@ import { cloneBlock, store as blocksStore } from '@wordpress/blocks';
  */
 
 /**
- * The object used in Query block that contains info and helper mappings
+ * The object used in Terms Query that contains info and helper mappings
  * from an array of IHasNameAndId objects.
  *
  * @typedef {Object} QueryEntitiesInfo
@@ -87,42 +87,6 @@ export const mapToIHasNameAndId = ( entities, path ) => {
 };
 
 /**
- * Hook that returns all taxonomies available to the block.
- *
- * @param {Object} attributes Block attributes.
- * @return {Object[]} An array of taxonomies.
- */
-export const useTaxonomies = ( attributes ) => {
-	const allowedTaxonomies = useAllowedTaxonomies( attributes );
-	const taxonomies = useSelect( ( select ) => {
-		const { getTaxonomies } = select( coreStore );
-		const filteredTaxonomies = getTaxonomies( {
-			context: 'view',
-		} );
-		return filteredTaxonomies;
-	}, [] );
-	return taxonomies?.filter( ( { slug } ) =>
-		isTaxonomyAllowed( allowedTaxonomies, slug )
-	);
-};
-
-/**
- * Hook that returns whether a specific post type is hierarchical.
- *
- * @param {string} postType The post type to check.
- * @return {boolean} Whether a specific post type is hierarchical.
- */
-export function useIsPostTypeHierarchical( postType ) {
-	return useSelect(
-		( select ) => {
-			const type = select( coreStore ).getPostType( postType );
-			return type?.viewable && type?.hierarchical;
-		},
-		[ postType ]
-	);
-}
-
-/**
  * Hook that returns the query properties' names defined by the active
  * block variation, to determine which block's filters to show.
  *
@@ -147,6 +111,26 @@ export function isControlAllowed( allowedControls, key ) {
 	}
 	return allowedControls.includes( key );
 }
+
+/**
+ * Hook that returns all taxonomies available to the block.
+ *
+ * @param {Object} attributes Block attributes.
+ * @return {Object[]} An array of taxonomies.
+ */
+export const useTaxonomies = ( attributes ) => {
+	const allowedTaxonomies = useAllowedTaxonomies( attributes );
+	const taxonomies = useSelect( ( select ) => {
+		const { getTaxonomies } = select( coreStore );
+		const filteredTaxonomies = getTaxonomies( {
+			context: 'view',
+		} );
+		return filteredTaxonomies;
+	}, [] );
+	return taxonomies?.filter( ( { slug } ) =>
+		isTaxonomyAllowed( allowedTaxonomies, slug )
+	);
+};
 
 /**
  * Hook that returns taxonomies allowed by the active block variation.
@@ -179,12 +163,12 @@ export function isTaxonomyAllowed( allowedTaxonomies, taxonomy ) {
  * are fundamental for the expected functionality of the block and don't affect
  * its design and presentation.
  *
- * Returns the cloned/transformed blocks and array of existing Query Loop
+ * Returns the cloned/transformed blocks and array of existing Terms Query
  * client ids for further manipulation, in order to avoid multiple recursions.
  *
  * @param {WPBlock[]}        blocks               The list of blocks to look through and transform(mutate).
- * @param {Record<string,*>} queryBlockAttributes The existing Query Loop's attributes.
- * @return {{ newBlocks: WPBlock[], queryClientIds: string[] }} An object with the cloned/transformed blocks and all the Query Loop clients from these blocks.
+ * @param {Record<string,*>} queryBlockAttributes The existing Terms Query's attributes.
+ * @return {{ newBlocks: WPBlock[], queryClientIds: string[] }} An object with the cloned/transformed blocks and all the Terms Query clients from these blocks.
  */
 export const getTransformedBlocksFromPattern = (
 	blocks,
@@ -229,32 +213,31 @@ export const getTransformedBlocksFromPattern = (
  * @return {string} The block name to be used in the patterns suggestions.
  */
 export function useBlockNameForPatterns( clientId, attributes ) {
-	const activeVariationName = useSelect(
-		( select ) =>
-			select( blocksStore ).getActiveBlockVariation(
-				'core/terms-query',
-				attributes
-			)?.name,
-		[ attributes ]
-	);
-	const blockName = `core/terms-query/${ activeVariationName }`;
-	const hasActiveVariationPatterns = useSelect(
+	return useSelect(
 		( select ) => {
+			const activeVariationName = select(
+				blocksStore
+			).getActiveBlockVariation( 'core/terms-query', attributes )?.name;
+
 			if ( ! activeVariationName ) {
-				return false;
+				return 'core/terms-query';
 			}
+
 			const { getBlockRootClientId, getPatternsByBlockTypes } =
 				select( blockEditorStore );
+
 			const rootClientId = getBlockRootClientId( clientId );
 			const activePatterns = getPatternsByBlockTypes(
-				blockName,
+				`core/terms-query/${ activeVariationName }`,
 				rootClientId
 			);
-			return activePatterns.length > 0;
+
+			return activePatterns.length > 0
+				? `core/terms-query/${ activeVariationName }`
+				: 'core/terms-query';
 		},
-		[ clientId, activeVariationName, blockName ]
+		[ clientId, attributes ]
 	);
-	return hasActiveVariationPatterns ? blockName : 'core/terms-query';
 }
 
 /**
@@ -264,15 +247,15 @@ export function useBlockNameForPatterns( clientId, attributes ) {
  *
  * If there are, these variations are going to be the only ones suggested
  * to the user in setup flow when clicking to `start blank`, without including
- * the default ones for Query Loop.
+ * the default ones for Terms Query.
  *
- * If there are no such scoped `block` variations, the default ones for Query
- * Loop are going to be suggested.
+ * If there are no such scoped `block` variations, the default ones for Terms
+ * Query are going to be suggested.
  *
  * The way we determine such variations is with the convention that they have the `namespace`
  * attribute defined as an array. This array should contain the names(`name` property) of any
  * variations they want to be connected to.
- * For example, if we have a `Query Loop` scoped `inserter` variation with the name `products`,
+ * For example, if we have a `Terms Query` scoped `inserter` variation with the name `products`,
  * we can connect a scoped `block` variation by setting its `namespace` attribute to `['products']`.
  * If the user selects this variation, the `namespace` attribute will be overridden by the
  * main `inserter` variation.
@@ -348,7 +331,7 @@ export const usePatterns = ( clientId, name ) => {
 
 /**
  * Hook that returns an object with information about the unsupported blocks
- * present inside a Query Loop with the given `clientId`. The returned object
+ * present inside a Terms Query with the given `clientId`. The returned object
  * contains props that are true when a certain type of unsupported block is
  * present.
  *
