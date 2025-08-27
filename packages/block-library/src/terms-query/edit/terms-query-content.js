@@ -5,6 +5,7 @@ import { useDispatch } from '@wordpress/data';
 import { useInstanceId } from '@wordpress/compose';
 import { useEffect } from '@wordpress/element';
 import {
+	BlockControls,
 	useBlockProps,
 	store as blockEditorStore,
 	useInnerBlocksProps,
@@ -14,6 +15,7 @@ import {
  * Internal dependencies
  */
 import TermsQueryInspectorControls from './inspector-controls';
+import TermQueryToolbar from './terms-query-toolbar';
 
 const TEMPLATE = [ [ 'core/term-template' ] ];
 
@@ -22,6 +24,7 @@ export default function TermsQueryContent( {
 	setAttributes,
 	clientId,
 	name,
+	openPatternSelectionModal,
 } ) {
 	const {
 		termQueryId,
@@ -60,6 +63,15 @@ export default function TermsQueryContent( {
 
 	return (
 		<>
+			<BlockControls>
+				<TermQueryToolbar
+					name={ name }
+					clientId={ clientId }
+					attributes={ attributes }
+					setQuery={ setQuery }
+					openPatternSelectionModal={ openPatternSelectionModal }
+				/>
+			</BlockControls>
 			<TermsQueryInspectorControls
 				name={ name }
 				attributes={ attributes }
