@@ -84,12 +84,6 @@ const variations = [
 						orientation: 'horizontal',
 					},
 					style: {
-						border: {
-							width: '1px',
-							style: 'solid',
-							color: 'var(--wp--preset--color--border)',
-						},
-						borderRadius: '4px',
 						padding: '1rem',
 						spacing: {
 							blockGap: '0.5rem',
@@ -103,11 +97,6 @@ const variations = [
 					[
 						'core/paragraph',
 						{
-							style: {
-								typography: {
-									fontWeight: '600',
-								},
-							},
 							metadata: {
 								name: __( 'Term Name' ),
 								bindings: {
