@@ -2,7 +2,10 @@
 	{
 		"name": "core/term-template",
 		"isValid": true,
-		"attributes": {},
+		"attributes": {
+			"blockLayout": "list",
+			"columnCount": 3
+		},
 		"innerBlocks": []
 	}
 ]
