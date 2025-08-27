@@ -120,8 +120,8 @@ function render_block_core_term_template_flat( $terms, $block ) {
  * @return string HTML content for hierarchical terms list.
  */
 function render_block_core_term_template_hierarchical( $terms, $block, $base_query_args ) {
-	$content        = '';
-	$block_layout   = $block->attributes['blockLayout'] ?? 'list';
+	$content      = '';
+	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $terms as $term ) {
 		$term_content     = render_block_core_term_template_single( $term, $block );
@@ -164,8 +164,8 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 		return '';
 	}
 
-	$content        = '';
-	$block_layout   = $block->attributes['blockLayout'] ?? 'list';
+	$content      = '';
+	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $child_terms as $child_term ) {
 		$term_content     = render_block_core_term_template_single( $child_term, $block );
