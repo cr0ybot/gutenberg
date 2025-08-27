@@ -80,64 +80,62 @@ const variations = [
 				'core/group',
 				{
 					layout: {
-						type: 'grid',
-						columnCount: 3,
+						type: 'flex',
+						orientation: 'horizontal',
 					},
 					style: {
+						border: {
+							width: '1px',
+							style: 'solid',
+							color: 'var(--wp--preset--color--border)',
+						},
+						borderRadius: '4px',
+						padding: '1rem',
 						spacing: {
-							blockGap: '1rem',
+							blockGap: '0.5rem',
 						},
 					},
 					metadata: {
-						name: __( 'Terms Grid Container' ),
+						name: __( 'Term Card' ),
 					},
 				},
 				[
 					[
-						'core/group',
+						'core/paragraph',
 						{
-							layout: {
-								type: 'constrained',
-							},
 							style: {
-								border: {
-									width: '1px',
-									style: 'solid',
-									color: 'var(--wp--preset--color--border)',
-								},
-								borderRadius: '4px',
-								padding: '1rem',
-								spacing: {
-									blockGap: '0.5rem',
+								typography: {
+									fontWeight: '600',
 								},
 							},
 							metadata: {
-								name: __( 'Term Card' ),
-							},
-						},
-						[
-							[
-								'core/paragraph',
-								{
-									style: {
-										typography: {
-											fontWeight: '600',
-										},
-									},
-									metadata: {
-										name: __( 'Term Name' ),
-										bindings: {
-											content: {
-												source: 'core/term-data',
-												args: {
-													key: 'name',
-												},
-											},
+								name: __( 'Term Name' ),
+								bindings: {
+									content: {
+										source: 'core/term-data',
+										args: {
+											key: 'name',
 										},
 									},
 								},
-							],
-						],
+							},
+						},
+					],
+					[
+						'core/paragraph',
+						{
+							metadata: {
+								name: __( 'Term Count' ),
+								bindings: {
+									content: {
+										source: 'core/term-data',
+										args: {
+											key: 'count',
+										},
+									},
+								},
+							},
+						},
 					],
 				],
 			],

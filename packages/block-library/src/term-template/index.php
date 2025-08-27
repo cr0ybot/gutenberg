@@ -65,10 +65,15 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		$content = render_block_core_term_template_flat( $terms, $block );
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes();
 	$block_layout = $attributes['blockLayout'] ?? 'list';
+	$column_count = $attributes['columnCount'] ?? 3;
 
-	// Use different HTML structure based on layout
+	// Add columns class for grid layout.
+	$wrapper_attributes = get_block_wrapper_attributes();
+	if ( $block_layout === 'grid' ) {
+		$wrapper_attributes = str_replace( 'class="', 'class="columns-' . $column_count . ' ', $wrapper_attributes );
+	}
+
 	if ( $block_layout === 'grid' ) {
 		return sprintf(
 			'<div %s>%s</div>',
@@ -77,7 +82,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		);
 	}
 
-	// Default list layout
+	// Default list layout.
 	return sprintf(
 		'<ul %s>%s</ul>',
 		$wrapper_attributes,

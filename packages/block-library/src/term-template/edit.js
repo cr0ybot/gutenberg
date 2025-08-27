@@ -13,6 +13,7 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+
 import { ToolbarGroup } from '@wordpress/components';
 import { useEntityRecords } from '@wordpress/core-data';
 import {
@@ -266,6 +267,12 @@ export default function TermTemplateEdit( {
 		[ clientId ]
 	);
 
+	const blockLayout = attributes?.blockLayout || 'list';
+	const columnCount = attributes?.columnCount || 3;
+	const blockProps = useBlockProps( {
+		className: blockLayout === 'grid' ? `columns-${ columnCount }` : '',
+	} );
+
 	const blockContexts = useMemo(
 		() =>
 			filteredTerms?.map( ( term ) => ( {
@@ -276,8 +283,6 @@ export default function TermTemplateEdit( {
 			} ) ),
 		[ filteredTerms, taxonomy ]
 	);
-
-	const blockProps = useBlockProps();
 
 	// Show variation picker if no blocks exist
 	if ( ! blocks?.length ) {
@@ -366,61 +371,58 @@ export default function TermTemplateEdit( {
 		);
 	};
 
-	const renderTerms = () => {
-		if ( hierarchical ) {
-			const termsTree = buildTermsTree( filteredTerms );
-			return termsTree.map( ( termNode ) =>
-				renderTermNode(
-					termNode,
-					renderTerm,
-					attributes?.blockLayout || 'list'
-				)
-			);
-		}
-
-		return blockContexts.map( ( blockContext ) => (
-			<BlockContextProvider
-				key={ blockContext.termId }
-				value={ blockContext }
-			>
-				{ isActiveTerm(
-					blockContext.termId,
-					activeBlockContextId,
-					blockContexts
-				) ? (
-					<TermTemplateInnerBlocks
-						classList={ blockContext.classList }
-						blockLayout={ attributes?.blockLayout || 'list' }
-					/>
-				) : null }
-				<MemoizedTermTemplateBlockPreview
-					blocks={ blocks }
-					blockContextId={ blockContext.termId }
-					classList={ blockContext.classList }
-					setActiveBlockContextId={ setActiveBlockContextId }
-					isHidden={ isActiveTerm(
-						blockContext.termId,
-						activeBlockContextId,
-						blockContexts
-					) }
-					blockLayout={ attributes?.blockLayout || 'list' }
-				/>
-			</BlockContextProvider>
-		) );
-	};
-
-	const blockLayout = attributes?.blockLayout || 'list';
-	const ContainerElement = blockLayout === 'grid' ? 'div' : 'ul';
-
 	return (
 		<>
 			<BlockControls>
 				<ToolbarGroup />
 			</BlockControls>
 
-			<div { ...blockProps }>
-				<ContainerElement>{ renderTerms() }</ContainerElement>
-			</div>
+			<ul { ...blockProps }>
+				{ hierarchical
+					? // Hierarchical rendering
+					  buildTermsTree( filteredTerms ).map( ( termNode ) =>
+							renderTermNode(
+								termNode,
+								renderTerm,
+								attributes?.blockLayout || 'list'
+							)
+					  )
+					: // Flat rendering
+					  blockContexts &&
+					  blockContexts.map( ( blockContext ) => (
+							<BlockContextProvider
+								key={ blockContext.termId }
+								value={ blockContext }
+							>
+								{ blockContext.termId ===
+								( activeBlockContextId ||
+									blockContexts[ 0 ]?.termId ) ? (
+									<TermTemplateInnerBlocks
+										classList={ blockContext.classList }
+										blockLayout={
+											attributes?.blockLayout || 'list'
+										}
+									/>
+								) : null }
+								<MemoizedTermTemplateBlockPreview
+									blocks={ blocks }
+									blockContextId={ blockContext.termId }
+									classList={ blockContext.classList }
+									setActiveBlockContextId={
+										setActiveBlockContextId
+									}
+									isHidden={
+										blockContext.termId ===
+										( activeBlockContextId ||
+											blockContexts[ 0 ]?.termId )
+									}
+									blockLayout={
+										attributes?.blockLayout || 'list'
+									}
+								/>
+							</BlockContextProvider>
+					  ) ) }
+			</ul>
 		</>
 	);
 }

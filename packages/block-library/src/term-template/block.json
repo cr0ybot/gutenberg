@@ -13,6 +13,10 @@
 		"blockLayout": {
 			"type": "string",
 			"default": "list"
+		},
+		"columnCount": {
+			"type": "number",
+			"default": 3
 		}
 	},
 	"supports": {
