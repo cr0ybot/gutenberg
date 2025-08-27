@@ -11,10 +11,17 @@ import {
 	__experimentalBlockVariationPicker as BlockVariationPicker,
 	useBlockProps,
 	useInnerBlocksProps,
+	InspectorControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
-import { ToolbarGroup } from '@wordpress/components';
+import {
+	ToolbarGroup,
+	PanelBody,
+	SelectControl,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
 import { useEntityRecords } from '@wordpress/core-data';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -376,6 +383,67 @@ export default function TermTemplateEdit( {
 			<BlockControls>
 				<ToolbarGroup />
 			</BlockControls>
+
+			<InspectorControls>
+				<PanelBody title={ __( 'Style' ) }>
+					<ToggleGroupControl
+						label={ __( 'Layout' ) }
+						value={ attributes?.blockLayout || 'list' }
+						onChange={ ( value ) =>
+							setAttributes( { blockLayout: value } )
+						}
+						isBlock
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+					>
+						<ToggleGroupControlOption
+							value="list"
+							label={ __( 'List' ) }
+						/>
+						<ToggleGroupControlOption
+							value="grid"
+							label={ __( 'Grid' ) }
+						/>
+					</ToggleGroupControl>
+					<div
+						style={ {
+							height:
+								attributes?.blockLayout === 'grid'
+									? 'auto'
+									: '0',
+							overflow: 'hidden',
+							opacity: attributes?.blockLayout === 'grid' ? 1 : 0,
+							transition: 'height 0.2s ease, opacity 0.2s ease',
+						} }
+					>
+						<SelectControl
+							label={ __( 'Number of Columns' ) }
+							value={ attributes?.columnCount || 3 }
+							options={ [
+								{
+									label: __( '2 Columns' ),
+									value: 2,
+								},
+								{
+									label: __( '3 Columns' ),
+									value: 3,
+								},
+								{
+									label: __( '4 Columns' ),
+									value: 4,
+								},
+							] }
+							onChange={ ( value ) =>
+								setAttributes( {
+									columnCount: parseInt( value ),
+								} )
+							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+						/>
+					</div>
+				</PanelBody>
+			</InspectorControls>
 
 			<ul { ...blockProps }>
 				{ hierarchical
