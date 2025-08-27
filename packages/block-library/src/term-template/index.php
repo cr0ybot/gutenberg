@@ -70,11 +70,11 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 
 	// Add columns class for grid layout.
 	$wrapper_attributes = get_block_wrapper_attributes();
-	if ( $block_layout === 'grid' ) {
+	if ( 'grid' === $block_layout ) {
 		$wrapper_attributes = str_replace( 'class="', 'class="columns-' . $column_count . ' ', $wrapper_attributes );
 	}
 
-	if ( $block_layout === 'grid' ) {
+	if ( 'grid' === $block_layout ) {
 		return sprintf(
 			'<div %s>%s</div>',
 			$wrapper_attributes,
@@ -120,8 +120,8 @@ function render_block_core_term_template_flat( $terms, $block ) {
  * @return string HTML content for hierarchical terms list.
  */
 function render_block_core_term_template_hierarchical( $terms, $block, $base_query_args ) {
-	$content = '';
-	$block_layout = $block->attributes['blockLayout'] ?? 'list';
+	$content        = '';
+	$block_layout   = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $terms as $term ) {
 		$term_content     = render_block_core_term_template_single( $term, $block );
@@ -129,7 +129,7 @@ function render_block_core_term_template_hierarchical( $terms, $block, $base_que
 
 		if ( ! empty( $children_content ) ) {
 			// Use appropriate wrapper based on layout
-			if ( $block_layout === 'grid' ) {
+			if ( 'grid' === $block_layout ) {
 				$term_content = str_replace( '</div>', '<div>' . $children_content . '</div></div>', $term_content );
 			} else {
 				$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
@@ -164,8 +164,8 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 		return '';
 	}
 
-	$content = '';
-	$block_layout = $block->attributes['blockLayout'] ?? 'list';
+	$content        = '';
+	$block_layout   = $block->attributes['blockLayout'] ?? 'list';
 
 	foreach ( $child_terms as $child_term ) {
 		$term_content     = render_block_core_term_template_single( $child_term, $block );
@@ -173,7 +173,7 @@ function render_block_core_term_template_get_children( $parent_term_id, $block, 
 
 		if ( ! empty( $children_content ) ) {
 			// Use appropriate wrapper based on layout
-			if ( $block_layout === 'grid' ) {
+			if ( 'grid' === $block_layout ) {
 				$term_content = str_replace( '</div>', '<div>' . $children_content . '</div></div>', $term_content );
 			} else {
 				$term_content = str_replace( '</li>', '<ul>' . $children_content . '</ul></li>', $term_content );
@@ -229,7 +229,7 @@ function render_block_core_term_template_single( $term, $block ) {
 	$block_layout = $block->attributes['blockLayout'] ?? 'list';
 
 	// Use different HTML element based on layout
-	if ( $block_layout === 'grid' ) {
+	if ( 'grid' === $block_layout ) {
 		return '<div class="' . esc_attr( $term_classes ) . '">' . $block_content . '</div>';
 	}
 
