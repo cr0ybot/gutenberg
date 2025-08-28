@@ -9,7 +9,7 @@ const variations = [
 		name: 'list',
 		title: __( 'List' ),
 		description: __( 'Display terms in a list layout.' ),
-		attributes: { blockLayout: 'list' },
+		attributes: { layout: { type: 'default' } },
 		isDefault: true,
 		icon: list,
 		scope: [ 'block', 'inserter' ],
@@ -72,7 +72,7 @@ const variations = [
 		name: 'grid',
 		title: __( 'Grid' ),
 		description: __( 'Display terms in a grid layout.' ),
-		attributes: { blockLayout: 'grid' },
+		attributes: { layout: { type: 'grid', columnCount: 3 } },
 		icon: grid,
 		scope: [ 'block', 'inserter' ],
 		innerBlocks: [

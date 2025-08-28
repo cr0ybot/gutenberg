@@ -9,20 +9,11 @@
 	"description": "Contains the block elements used to render a taxonomy term, like the name, description, and more.",
 	"textdomain": "default",
 	"usesContext": [ "termQuery" ],
-	"attributes": {
-		"blockLayout": {
-			"type": "string",
-			"default": "list"
-		},
-		"columnCount": {
-			"type": "number",
-			"default": 3
-		}
-	},
 	"supports": {
 		"reusable": false,
 		"html": false,
 		"align": [ "wide", "full" ],
+		"layout": true,
 		"color": {
 			"gradients": true,
 			"link": true,
@@ -46,7 +37,15 @@
 		},
 		"spacing": {
 			"margin": true,
-			"padding": true
+			"padding": true,
+			"blockGap": {
+				"__experimentalDefault": "1.25em"
+			},
+			"__experimentalDefaultControls": {
+				"blockGap": true,
+				"padding": false,
+				"margin": false
+			}
 		},
 		"interactivity": {
 			"clientNavigation": true

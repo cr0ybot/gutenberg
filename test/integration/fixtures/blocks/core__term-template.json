@@ -3,8 +3,9 @@
 		"name": "core/term-template",
 		"isValid": true,
 		"attributes": {
-			"blockLayout": "list",
-			"columnCount": 3
+			"layout": {
+				"type": "default"
+			}
 		},
 		"innerBlocks": []
 	}
