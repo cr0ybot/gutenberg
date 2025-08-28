@@ -2,11 +2,7 @@
 	{
 		"name": "core/term-template",
 		"isValid": true,
-		"attributes": {
-			"layout": {
-				"type": "default"
-			}
-		},
+		"attributes": {},
 		"innerBlocks": []
 	}
 ]
