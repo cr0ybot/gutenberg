@@ -8,9 +8,8 @@ import clsx from 'clsx';
  */
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { __, _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import {
-	BlockControls,
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
 	__experimentalBlockVariationPicker as BlockVariationPicker,
@@ -19,19 +18,16 @@ import {
 	InspectorControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-
+import { useEntityRecords } from '@wordpress/core-data';
 import {
-	ToolbarGroup,
 	PanelBody,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { useEntityRecords } from '@wordpress/core-data';
 import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
-import { list, grid } from '@wordpress/icons';
 
 const TEMPLATE = [
 	[
@@ -215,7 +211,7 @@ export default function TermTemplateEdit( {
 } ) {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
-	const { type: layoutType, columnCount = 3 } = attributes?.layout || {};
+	const { type: layoutType } = attributes?.layout || {};
 
 	// Switch to list if hierarchical is true and grid is selected.
 	useEffect( () => {
@@ -331,46 +327,6 @@ export default function TermTemplateEdit( {
 		return <p { ...blockProps }> { __( 'No terms found.' ) }</p>;
 	}
 
-	const setDisplayLayout = ( newDisplayLayout ) => {
-		let cleanLayout;
-
-		if ( newDisplayLayout.type === 'default' ) {
-			cleanLayout = { type: 'default' };
-		} else if ( newDisplayLayout.type === 'grid' ) {
-			cleanLayout = {
-				type: 'grid',
-				columnCount: newDisplayLayout.columnCount || 3,
-			};
-		} else {
-			cleanLayout = { ...newDisplayLayout };
-			delete cleanLayout.minimumColumnWidth;
-		}
-
-		setAttributes( {
-			layout: cleanLayout,
-		} );
-	};
-
-	const displayLayoutControls = [
-		{
-			icon: list,
-			title: _x( 'List view', 'Term template block display setting' ),
-			onClick: () => setDisplayLayout( { type: 'default' } ),
-			isActive: layoutType === 'default' || layoutType === 'constrained',
-		},
-		{
-			icon: grid,
-			title: _x( 'Grid view', 'Term template block display setting' ),
-			onClick: () =>
-				setDisplayLayout( {
-					type: 'grid',
-					columnCount,
-				} ),
-			isActive: layoutType === 'grid',
-			disabled: hierarchical,
-		},
-	];
-
 	const renderTerm = ( term ) => {
 		const blockContext = {
 			taxonomy,
@@ -407,23 +363,20 @@ export default function TermTemplateEdit( {
 
 	return (
 		<>
-			<BlockControls>
-				<ToolbarGroup controls={ displayLayoutControls } />
-			</BlockControls>
-
 			<InspectorControls>
-				<PanelBody title={ __( 'Layout' ) }>
+				<PanelBody title={ __( 'Style' ) }>
 					<ToggleGroupControl
 						label={ __( 'Display Layout' ) }
 						value={ layoutType === 'grid' ? 'grid' : 'list' }
 						onChange={ ( value ) => {
 							if ( value === 'grid' ) {
-								setDisplayLayout( {
-									type: 'grid',
-									columnCount,
+								setAttributes( {
+									layout: { type: 'grid' },
 								} );
 							} else {
-								setDisplayLayout( { type: 'default' } );
+								setAttributes( {
+									layout: { type: 'default' },
+								} );
 							}
 						} }
 						isBlock
@@ -446,12 +399,10 @@ export default function TermTemplateEdit( {
 
 			<ul { ...blockProps }>
 				{ hierarchical
-					? // Hierarchical rendering
-					  buildTermsTree( filteredTerms ).map( ( termNode ) =>
+					? buildTermsTree( filteredTerms ).map( ( termNode ) =>
 							renderTermNode( termNode, renderTerm )
 					  )
-					: // Flat rendering
-					  blockContexts &&
+					: blockContexts &&
 					  blockContexts.map( ( blockContext ) => (
 							<BlockContextProvider
 								key={ blockContext.termId }
