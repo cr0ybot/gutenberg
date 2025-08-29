@@ -65,7 +65,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		$content = render_block_core_term_template_flat( $terms, $block );
 	}
 
-	$classnames = '';
+	$classnames = 'wp-block-term-template';
 
 	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
 		$classnames .= ' has-link-color';
