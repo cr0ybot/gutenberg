@@ -8,8 +8,9 @@ import clsx from 'clsx';
  */
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import {
+	BlockControls,
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
 	__experimentalBlockVariationPicker as BlockVariationPicker,
@@ -21,9 +22,11 @@ import {
 import { useEntityRecords } from '@wordpress/core-data';
 import {
 	PanelBody,
+	ToolbarGroup,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
+import { list, grid } from '@wordpress/icons';
 import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
@@ -327,6 +330,30 @@ export default function TermTemplateEdit( {
 		return <p { ...blockProps }> { __( 'No terms found.' ) }</p>;
 	}
 
+	const setDisplayLayout = ( newDisplayLayout ) =>
+		setAttributes( {
+			layout: { ...attributes?.layout, ...newDisplayLayout },
+		} );
+
+	const displayLayoutControls = [
+		{
+			icon: list,
+			title: _x( 'List view', 'Term template block display setting' ),
+			onClick: () => setDisplayLayout( { type: 'default' } ),
+			isActive: layoutType === 'default' || layoutType === 'constrained',
+		},
+		{
+			icon: grid,
+			title: _x( 'Grid view', 'Term template block display setting' ),
+			onClick: () =>
+				setDisplayLayout( {
+					type: 'grid',
+				} ),
+			isActive: layoutType === 'grid',
+			disabled: hierarchical,
+		},
+	];
+
 	const renderTerm = ( term ) => {
 		const blockContext = {
 			taxonomy,
@@ -363,6 +390,10 @@ export default function TermTemplateEdit( {
 
 	return (
 		<>
+			<BlockControls>
+				<ToolbarGroup controls={ displayLayoutControls } />
+			</BlockControls>
+
 			<InspectorControls>
 				<PanelBody title={ __( 'Style' ) }>
 					<ToggleGroupControl
