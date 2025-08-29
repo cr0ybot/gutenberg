@@ -4,6 +4,62 @@
 import { __ } from '@wordpress/i18n';
 import { list, grid } from '@wordpress/icons';
 
+const createInnerBlocks = ( groupMetadata, groupStyle = {} ) => [
+	[
+		'core/group',
+		{
+			layout: {
+				type: 'flex',
+				orientation: 'horizontal',
+			},
+			style: {
+				spacing: {
+					blockGap: '0.5rem',
+				},
+				...groupStyle,
+			},
+			metadata: {
+				name: groupMetadata,
+			},
+		},
+		[
+			[
+				'core/paragraph',
+				{
+					metadata: {
+						name: __( 'Term Name' ),
+						bindings: {
+							content: {
+								source: 'core/term-data',
+								args: {
+									key: 'name',
+								},
+							},
+						},
+					},
+				},
+			],
+			[
+				'core/paragraph',
+				{
+					placeholder: __( '(count)' ),
+					metadata: {
+						name: __( 'Term Count' ),
+						bindings: {
+							content: {
+								source: 'core/term-data',
+								args: {
+									key: 'count',
+								},
+							},
+						},
+					},
+				},
+			],
+		],
+	],
+];
+
 const variations = [
 	{
 		name: 'list',
@@ -13,60 +69,7 @@ const variations = [
 		isDefault: true,
 		icon: list,
 		scope: [ 'block', 'inserter' ],
-		innerBlocks: [
-			[
-				'core/group',
-				{
-					layout: {
-						type: 'flex',
-						orientation: 'horizontal',
-					},
-					style: {
-						spacing: {
-							blockGap: '0.5rem',
-						},
-					},
-					metadata: {
-						name: __( 'Term Name with Count' ),
-					},
-				},
-				[
-					[
-						'core/paragraph',
-						{
-							metadata: {
-								name: __( 'Term Name' ),
-								bindings: {
-									content: {
-										source: 'core/term-data',
-										args: {
-											key: 'name',
-										},
-									},
-								},
-							},
-						},
-					],
-					[
-						'core/paragraph',
-						{
-							placeholder: __( '(count)' ),
-							metadata: {
-								name: __( 'Term Count' ),
-								bindings: {
-									content: {
-										source: 'core/term-data',
-										args: {
-											key: 'count',
-										},
-									},
-								},
-							},
-						},
-					],
-				],
-			],
-		],
+		innerBlocks: createInnerBlocks( __( 'Term Name with Count' ) ),
 	},
 	{
 		name: 'grid',
@@ -75,60 +78,9 @@ const variations = [
 		attributes: { layout: { type: 'grid', columnCount: 3 } },
 		icon: grid,
 		scope: [ 'block', 'inserter' ],
-		innerBlocks: [
-			[
-				'core/group',
-				{
-					layout: {
-						type: 'flex',
-						orientation: 'horizontal',
-					},
-					style: {
-						padding: '1rem',
-						spacing: {
-							blockGap: '0.5rem',
-						},
-					},
-					metadata: {
-						name: __( 'Term Card' ),
-					},
-				},
-				[
-					[
-						'core/paragraph',
-						{
-							metadata: {
-								name: __( 'Term Name' ),
-								bindings: {
-									content: {
-										source: 'core/term-data',
-										args: {
-											key: 'name',
-										},
-									},
-								},
-							},
-						},
-					],
-					[
-						'core/paragraph',
-						{
-							metadata: {
-								name: __( 'Term Count' ),
-								bindings: {
-									content: {
-										source: 'core/term-data',
-										args: {
-											key: 'count',
-										},
-									},
-								},
-							},
-						},
-					],
-				],
-			],
-		],
+		innerBlocks: createInnerBlocks( __( 'Term Card' ), {
+			padding: '1rem',
+		} ),
 	},
 ];
 
