@@ -2,7 +2,17 @@
 
 ## Unreleased
 
-### Bug fixes
+### Bug Fixes
+
+-   `Tabs`: Ensure font size inheritance for tab buttons in all contexts ([#71346](https://github.com/WordPress/gutenberg/pull/71346)).
+
+### Internal
+
+-   Upgrade `framer-motion` package to version `^11.15.0` ([#71442](https://github.com/WordPress/gutenberg/pull/71442)).
+
+## 30.2.0 (2025-08-20)
+
+### Bug Fixes
 
 -   `MenuItem`: make accessible when disabled ([#71251](https://github.com/WordPress/gutenberg/pull/71251)).
 
@@ -13,6 +23,7 @@
 ### Internal
 
 -   Validated form controls: Add support for async validation. This is a breaking API change that splits the `customValidator` prop into an `onValidate` callback and a `customValidity` object. ([#71184](https://github.com/WordPress/gutenberg/pull/71184)).
+-   Validated form controls: Fix bug where "validating" state was not shown when transitioning from error state ([#71260](https://github.com/WordPress/gutenberg/pull/71260)).
 -   `DateCalendar`, `DateRangeCalendar`: use `px` instead of `rem` units. ([#71248](https://github.com/WordPress/gutenberg/pull/71248)).
 
 ## 30.1.0 (2025-08-07)

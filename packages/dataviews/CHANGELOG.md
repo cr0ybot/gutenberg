@@ -4,6 +4,16 @@
 
 ### Breaking changes
 
+- Revert the ability to hide the view config via `config` prop and export a `DataViews.Footer` component to support the "Minimal UI" story. [#71276](https://github.com/WordPress/gutenberg/pull/71276)
+
+### Bug Fixes
+
+-   DataViews: Fix incorrect documentation for `defaultLayouts` prop. [#71334](https://github.com/WordPress/gutenberg/pull/71334)
+
+## 7.0.0 (2025-08-20)
+
+### Breaking changes
+
 - DataForm: introduce a new `card` layout. The `form.type` has been moved under a new `layout` object and it is now `form.layout.type`, check the README for details. [#71100](https://github.com/WordPress/gutenberg/pull/71100)
 - Adds a new `config` prop to DataViews that allows hiding the view config control entirely. The `perPageSizes` prop has been moved to be part of this new prop. [#71173](https://github.com/WordPress/gutenberg/pull/71173)
 
@@ -22,6 +32,7 @@
 ### Bug Fixes
 
 - Do not throw exception when `view.layout.previewSize` is smaller than the smallest available size. [#71218](https://github.com/WordPress/gutenberg/pull/71218)
+- Fix actions horizontal layout consistency when all actions are primary. [#71274](https://github.com/WordPress/gutenberg/pull/71274)
 
 ## 6.0.0 (2025-08-07)
 
