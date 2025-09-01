@@ -28,6 +28,11 @@ function createDataFields( termDataValues, idValue ) {
 			value: termDataValues?.slug,
 			type: 'string',
 		},
+		link: {
+			label: __( 'Link' ),
+			value: termDataValues?.link,
+			type: 'string',
+		},
 		description: {
 			label: __( 'Description' ),
 			value: termDataValues?.description,

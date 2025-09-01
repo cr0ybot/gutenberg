@@ -51,6 +51,9 @@ function gutenberg_block_bindings_term_data_get_value( array $source_args, $bloc
 		case 'name':
 			return esc_html( $term->name );
 
+		case 'link':
+			return esc_url( get_term_link( $term ) );
+
 		case 'slug':
 			return esc_html( $term->slug );
 
