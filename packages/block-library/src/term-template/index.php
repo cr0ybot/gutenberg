@@ -30,9 +30,8 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 	$query = $query_block_context['termQuery'];
 
 	$query_args = array(
-		'per_page'   => $query['perPage'] ?? 100,
-		'page'       => $query['pages'] ?? 1,
 		'taxonomy'   => $query['taxonomy'] ?? 'category',
+		'number'     => $query['perPage'] ?? 10,
 		'order'      => $query['order'] ?? 'asc',
 		'orderby'    => $query['orderBy'] ?? 'name',
 		'hide_empty' => $query['hideEmpty'] ?? true,

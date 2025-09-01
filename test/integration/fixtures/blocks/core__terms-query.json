@@ -5,7 +5,7 @@
 		"attributes": {
 			"termQueryId": 0,
 			"termQuery": {
-				"perPage": 100,
+				"perPage": 10,
 				"pages": 0,
 				"taxonomy": "category",
 				"order": "asc",

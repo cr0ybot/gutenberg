@@ -207,7 +207,7 @@ export default function TermTemplateEdit( {
 			hideEmpty,
 			hierarchical,
 			parent,
-			perPage = 100,
+			perPage = 10,
 		} = {},
 	},
 	__unstableLayoutClassNames,
@@ -229,7 +229,10 @@ export default function TermTemplateEdit( {
 		order,
 		orderby: orderBy,
 		hide_empty: hideEmpty,
-		per_page: perPage,
+		// To preview the data the closest to the frontend, we fetch the largest number of terms
+		// and limit them during rendering. This is because WP_Term_Query fetches data in hierarchical manner,
+		// while in editor we build the hierarchy manually. It also allows us to avoid re-fetching data when max terms changes.
+		per_page: 100,
 	};
 
 	const { records: terms, isResolving } = useEntityRecords(
@@ -434,33 +437,35 @@ export default function TermTemplateEdit( {
 							renderTermNode( termNode, renderTerm )
 					  )
 					: blockContexts &&
-					  blockContexts.map( ( blockContext ) => (
-							<BlockContextProvider
-								key={ blockContext.termId }
-								value={ blockContext }
-							>
-								{ blockContext.termId ===
-								( activeBlockContextId ||
-									blockContexts[ 0 ]?.termId ) ? (
-									<TermTemplateInnerBlocks
+					  blockContexts
+							.slice( 0, perPage )
+							.map( ( blockContext ) => (
+								<BlockContextProvider
+									key={ blockContext.termId }
+									value={ blockContext }
+								>
+									{ blockContext.termId ===
+									( activeBlockContextId ||
+										blockContexts[ 0 ]?.termId ) ? (
+										<TermTemplateInnerBlocks
+											classList={ blockContext.classList }
+										/>
+									) : null }
+									<MemoizedTermTemplateBlockPreview
+										blocks={ blocks }
+										blockContextId={ blockContext.termId }
 										classList={ blockContext.classList }
+										setActiveBlockContextId={
+											setActiveBlockContextId
+										}
+										isHidden={
+											blockContext.termId ===
+											( activeBlockContextId ||
+												blockContexts[ 0 ]?.termId )
+										}
 									/>
-								) : null }
-								<MemoizedTermTemplateBlockPreview
-									blocks={ blocks }
-									blockContextId={ blockContext.termId }
-									classList={ blockContext.classList }
-									setActiveBlockContextId={
-										setActiveBlockContextId
-									}
-									isHidden={
-										blockContext.termId ===
-										( activeBlockContextId ||
-											blockContexts[ 0 ]?.termId )
-									}
-								/>
-							</BlockContextProvider>
-					  ) ) }
+								</BlockContextProvider>
+							) ) }
 			</ul>
 		</>
 	);
