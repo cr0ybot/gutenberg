@@ -402,6 +402,13 @@ export default function TermTemplateEdit( {
 					<ToggleGroupControl
 						label={ __( 'Display Layout' ) }
 						value={ layoutType === 'grid' ? 'grid' : 'list' }
+						help={
+							hierarchical
+								? __(
+										'Grid view is not available when the "Show hierarchy" setting is enabled.'
+								  )
+								: undefined
+						}
 						onChange={ ( value ) => {
 							if ( value === 'grid' ) {
 								setAttributes( {
