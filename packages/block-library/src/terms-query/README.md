@@ -51,10 +51,6 @@ The Terms Query block supports the following query parameters:
 <!-- /wp:terms-query -->
 ```
 
-## Block Variations
-
-
-
 ## Context
 
 The Terms Query block provides the following context to its inner blocks:
