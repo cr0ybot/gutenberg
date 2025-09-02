@@ -170,7 +170,7 @@ function buildTermsTree( terms ) {
  */
 function renderTermNode( termNode, renderTerm ) {
 	return (
-		<li>
+		<li className="wp-block-term">
 			{ renderTerm( termNode.term ) }
 			{ termNode.children.length > 0 && (
 				<ul>
