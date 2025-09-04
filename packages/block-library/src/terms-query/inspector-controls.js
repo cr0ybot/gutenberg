@@ -128,7 +128,7 @@ export default function TermsQueryInspectorControls( {
 					</ToolsPanelItem>
 
 					<ToolsPanelItem
-						hasValue={ () => termQuery.parent === 0 }
+						hasValue={ () => termQuery.parent !== 0 }
 						label={ __( 'Show only top level terms' ) }
 						onDeselect={ () => setQuery( { parent: undefined } ) }
 						isShownByDefault
