@@ -13,7 +13,6 @@ import {
 	BlockControls,
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
-	__experimentalBlockVariationPicker as BlockVariationPicker,
 	useBlockProps,
 	useInnerBlocksProps,
 	InspectorControls,
@@ -26,11 +25,8 @@ import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { list, grid, layout } from '@wordpress/icons';
-import {
-	createBlocksFromInnerBlocksTemplate,
-	store as blocksStore,
-} from '@wordpress/blocks';
+import { list, grid } from '@wordpress/icons';
+import { createBlocksFromInnerBlocksTemplate } from '@wordpress/blocks';
 
 const TEMPLATE = [
 	[
@@ -249,19 +245,12 @@ export default function TermTemplateEdit( {
 		return terms.filter( ( term ) => ! term.parent );
 	}, [ terms, parent ] );
 
-	const { blocks, variations, defaultVariation } = useSelect(
+	const { blocks } = useSelect(
 		( select ) => {
 			const { getBlocks } = select( blockEditorStore );
-			const { getBlockVariations, getDefaultBlockVariation } =
-				select( blocksStore );
 
 			return {
 				blocks: getBlocks( clientId ),
-				variations: getBlockVariations( 'core/term-template', 'block' ),
-				defaultVariation: getDefaultBlockVariation(
-					'core/term-template',
-					'block'
-				),
 			};
 		},
 		[ clientId ]
@@ -282,34 +271,28 @@ export default function TermTemplateEdit( {
 		[ filteredTerms, taxonomy ]
 	);
 
-	// Show variation picker if no blocks exist.
+	// Automatically use list view template if no blocks exist.
 	if ( ! blocks?.length ) {
+		setAttributes( { layout: { type: 'default' } } );
+
+		replaceInnerBlocks(
+			clientId,
+			createBlocksFromInnerBlocksTemplate( TEMPLATE ),
+			true
+		);
+
 		return (
-			<div { ...blockProps }>
-				<BlockVariationPicker
-					icon={ layout }
-					label={ __( 'Term Template' ) }
-					variations={ variations }
-					instructions={ __(
-						'Choose a layout for displaying terms:'
-					) }
-					onSelect={ ( nextVariation = defaultVariation ) => {
-						if ( nextVariation.attributes ) {
-							setAttributes( nextVariation.attributes );
-						}
-						if ( nextVariation.innerBlocks ) {
-							replaceInnerBlocks(
-								clientId,
-								createBlocksFromInnerBlocksTemplate(
-									nextVariation.innerBlocks
-								),
-								true
-							);
-						}
-					} }
-					allowSkip
-				/>
-			</div>
+			<ul { ...blockProps }>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+				<li className="wp-block-term term-loading">
+					<div className="term-loading-placeholder" />
+				</li>
+			</ul>
 		);
 	}
 
