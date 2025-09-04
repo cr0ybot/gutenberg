@@ -287,7 +287,7 @@ export default function TermTemplateEdit( {
 		return (
 			<div { ...blockProps }>
 				<BlockVariationPicker
-					icon="layout"
+					icon={ layout }
 					label={ __( 'Term Template' ) }
 					variations={ variations }
 					instructions={ __(
