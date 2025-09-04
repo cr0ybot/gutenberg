@@ -26,7 +26,7 @@ import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { list, grid } from '@wordpress/icons';
+import { list, grid, layout } from '@wordpress/icons';
 import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
