@@ -61,6 +61,8 @@ export default function TermsQueryInspectorControls( {
 								orderBy: 'name',
 								hideEmpty: true,
 								hierarchical: false,
+								parent: 0,
+								perPage: 10,
 							},
 						} );
 					} }
