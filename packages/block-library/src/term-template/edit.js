@@ -7,22 +7,16 @@ import clsx from 'clsx';
  * WordPress dependencies
  */
 import { memo, useMemo, useState } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { layout } from '@wordpress/icons';
+import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
-	__experimentalBlockVariationPicker as BlockVariationPicker,
 	useBlockProps,
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useEntityRecords } from '@wordpress/core-data';
-import {
-	createBlocksFromInnerBlocksTemplate,
-	store as blocksStore,
-} from '@wordpress/blocks';
 
 const TEMPLATE = [
 	[
@@ -189,7 +183,6 @@ function isActiveTerm( termId, activeBlockContextId, blockContexts ) {
 
 export default function TermTemplateEdit( {
 	clientId,
-	setAttributes,
 	context: {
 		termQuery: {
 			taxonomy,
@@ -204,7 +197,6 @@ export default function TermTemplateEdit( {
 	__unstableLayoutClassNames,
 } ) {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
-	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 
 	const queryArgs = {
 		order,
@@ -230,19 +222,12 @@ export default function TermTemplateEdit( {
 		return terms.filter( ( term ) => ! term.parent );
 	}, [ terms, parent ] );
 
-	const { blocks, variations, defaultVariation } = useSelect(
+	const { blocks } = useSelect(
 		( select ) => {
 			const { getBlocks } = select( blockEditorStore );
-			const { getBlockVariations, getDefaultBlockVariation } =
-				select( blocksStore );
 
 			return {
 				blocks: getBlocks( clientId ),
-				variations: getBlockVariations( 'core/term-template', 'block' ),
-				defaultVariation: getDefaultBlockVariation(
-					'core/term-template',
-					'block'
-				),
 			};
 		},
 		[ clientId ]
@@ -262,37 +247,6 @@ export default function TermTemplateEdit( {
 			} ) ),
 		[ filteredTerms, taxonomy ]
 	);
-
-	// Show variation picker if no blocks exist.
-	if ( ! blocks?.length ) {
-		return (
-			<div { ...blockProps }>
-				<BlockVariationPicker
-					icon={ layout }
-					label={ __( 'Term Template' ) }
-					variations={ variations }
-					instructions={ __(
-						'Choose a layout for displaying terms:'
-					) }
-					onSelect={ ( nextVariation = defaultVariation ) => {
-						if ( nextVariation.attributes ) {
-							setAttributes( nextVariation.attributes );
-						}
-						if ( nextVariation.innerBlocks ) {
-							replaceInnerBlocks(
-								clientId,
-								createBlocksFromInnerBlocksTemplate(
-									nextVariation.innerBlocks
-								),
-								true
-							);
-						}
-					} }
-					allowSkip
-				/>
-			</div>
-		);
-	}
 
 	if ( isResolving ) {
 		return (
