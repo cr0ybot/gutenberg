@@ -8,8 +8,8 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import TermQueryContent from './terms-query-content';
-import TermQueryPlaceholder from './terms-query-placeholder';
+import TermsQueryContent from './terms-query-content';
+import TermsQueryPlaceholder from './terms-query-placeholder';
 import { PatternSelectionModal } from './pattern-selection';
 
 const TermsQueryEdit = ( props ) => {
@@ -29,7 +29,7 @@ const TermsQueryEdit = ( props ) => {
 	);
 
 	const Component =
-		taxonomy && hasInnerBlocks ? TermQueryContent : TermQueryPlaceholder;
+		taxonomy && hasInnerBlocks ? TermsQueryContent : TermsQueryPlaceholder;
 	return (
 		<>
 			<Component
