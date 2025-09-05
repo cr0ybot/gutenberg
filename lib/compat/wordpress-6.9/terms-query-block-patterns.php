@@ -17,12 +17,12 @@ function gutenberg_terms_query_register_block_patterns() {
 	$should_register_core_patterns = get_theme_support( 'core-block-patterns' );
 
 	if ( $should_register_core_patterns ) {
-		$term_query_block_patterns = [
-			'term-query-standard' => [
-				'title'       => _x( 'Standard Terms', 'Block pattern title' ),
-				'blockTypes' => [ 'core/terms-query' ],
-				'categories' => [ 'query' ],
-				'content'     => '<!-- wp:terms-query -->
+		$term_query_block_patterns = array(
+			'term-query-standard' => array(
+				'title'      => _x( 'Standard Terms', 'Block pattern title' ),
+				'blockTypes' => array( 'core/terms-query' ),
+				'categories' => array( 'query' ),
+				'content'    => '<!-- wp:terms-query -->
 					<div class="wp-block-terms-query">
 					<!-- wp:term-template {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch","flexWrap":"nowrap"}} -->
 					<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap"}} -->
@@ -48,8 +48,8 @@ function gutenberg_terms_query_register_block_patterns() {
 					<!-- /wp:term-template -->
 					</div>
 					<!-- /wp:terms-query -->',
-			],
-		];
+			),
+		);
 
 		foreach ( $term_query_block_patterns as $name => $pattern ) {
 			$pattern['source'] = 'core';
