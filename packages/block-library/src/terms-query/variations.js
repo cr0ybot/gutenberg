@@ -17,7 +17,14 @@ const variations = [
 		innerBlocks: [
 			[
 				'core/term-template',
-				{},
+				{
+					layout: {
+						type: 'flex',
+						orientation: 'vertical',
+						justifyContent: 'stretch',
+						flexWrap: 'nowrap',
+					},
+				},
 				[
 					[
 						'core/buttons',
@@ -58,7 +65,14 @@ const variations = [
 		innerBlocks: [
 			[
 				'core/term-template',
-				{},
+				{
+					layout: {
+						type: 'flex',
+						orientation: 'vertical',
+						justifyContent: 'stretch',
+						flexWrap: 'nowrap',
+					},
+				},
 				[
 					[
 						'core/heading',
@@ -110,7 +124,14 @@ const variations = [
 		innerBlocks: [
 			[
 				'core/term-template',
-				{},
+				{
+					layout: {
+						type: 'flex',
+						orientation: 'vertical',
+						justifyContent: 'stretch',
+						flexWrap: 'nowrap',
+					},
+				},
 				[
 					[
 						'core/heading',
