@@ -8,106 +8,41 @@ import {
 } from '@wordpress/blocks';
 import { useState } from '@wordpress/element';
 import {
-	useBlockProps,
 	store as blockEditorStore,
 	__experimentalBlockVariationPicker,
+	BlockControls,
+	useBlockProps,
 } from '@wordpress/block-editor';
-import {
-	Button,
-	Flex,
-	FlexBlock,
-	Placeholder,
-	SelectControl,
-	Spinner,
-} from '@wordpress/components';
+import { Button, Placeholder } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { useResizeObserver } from '@wordpress/compose';
 
 /**
  * Internal dependencies
  */
-import { useScopedBlockVariations, useTaxonomies } from '../utils';
+import { useScopedBlockVariations } from '../utils';
 import { useBlockPatterns } from './pattern-selection';
-
-function TaxonomyPicker( { attributes, setAttributes } ) {
-	const { termQuery } = attributes;
-	const { taxonomy } = termQuery;
-	const [ selectedTaxonomy, setSelectedTaxonomy ] = useState( taxonomy );
-	const taxonomies = useTaxonomies( attributes );
-
-	const onSubmitTaxonomy = ( event ) => {
-		event.preventDefault();
-
-		if ( selectedTaxonomy ) {
-			setAttributes( {
-				termQuery: { ...termQuery, taxonomy: selectedTaxonomy },
-			} );
-		}
-	};
-
-	return (
-		<form
-			onSubmit={ onSubmitTaxonomy }
-			className="wp-block-terms-query__placeholder-form"
-		>
-			{ ! taxonomies ? (
-				<>
-					<Spinner />
-					<p>{ __( 'Loading taxonomies…' ) }</p>
-				</>
-			) : (
-				<Flex
-					direction="column"
-					align="stretch"
-					style={ { width: '100%' } }
-				>
-					<SelectControl
-						label={ __( 'Select taxonomy' ) }
-						value={ selectedTaxonomy }
-						options={ [
-							{
-								value: '',
-								label: __( 'Select a taxonomy' ),
-							},
-							...taxonomies?.map( ( { slug, name } ) => ( {
-								value: slug,
-								label: name,
-							} ) ),
-						] }
-						onChange={ ( value ) => {
-							setSelectedTaxonomy( value );
-						} }
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-					/>
-					<FlexBlock>
-						<Button
-							__next40pxDefaultSize
-							variant="primary"
-							type="submit"
-							style={ { marginLeft: 'auto' } }
-						>
-							{ __( 'Select taxonomy' ) }
-						</Button>
-					</FlexBlock>
-				</Flex>
-			) }
-		</form>
-	);
-}
+import TermsQueryToolbar from './terms-query-toolbar';
 
 export default function TermsQueryPlaceholder( {
 	attributes,
-	context,
 	clientId,
 	name,
-	setAttributes,
 	openPatternSelectionModal,
 } ) {
-	const { termQuery } = attributes;
-	const { termQuery: queryContext } = context;
-	const taxonomy = queryContext?.taxonomy || termQuery?.taxonomy;
 	const [ isStartingBlank, setIsStartingBlank ] = useState( false );
-	const blockProps = useBlockProps();
+	const [ containerWidth, setContainerWidth ] = useState( 0 );
+
+	// Use ResizeObserver to monitor container width.
+	const resizeObserverRef = useResizeObserver( ( [ entry ] ) => {
+		setContainerWidth( entry.contentRect.width );
+	} );
+
+	const SMALL_CONTAINER_BREAKPOINT = 160;
+
+	const isSmallContainer =
+		containerWidth > 0 && containerWidth < SMALL_CONTAINER_BREAKPOINT;
+
 	const { blockType, activeBlockVariation } = useSelect(
 		( select ) => {
 			const { getActiveBlockVariation, getBlockType } =
@@ -128,6 +63,9 @@ export default function TermsQueryPlaceholder( {
 		activeBlockVariation?.icon ||
 		blockType?.icon?.src;
 	const label = activeBlockVariation?.title || blockType?.title;
+	const blockProps = useBlockProps( {
+		ref: resizeObserverRef,
+	} );
 
 	if ( isStartingBlank ) {
 		return (
@@ -139,42 +77,46 @@ export default function TermsQueryPlaceholder( {
 			/>
 		);
 	}
-
 	return (
 		<div { ...blockProps }>
+			<BlockControls>
+				<TermsQueryToolbar
+					clientId={ clientId }
+					attributes={ attributes }
+					hasInnerBlocks={ false }
+				/>
+			</BlockControls>
 			<Placeholder
-				icon={ icon }
-				label={ label }
-				instructions={ __(
-					'Choose a pattern for the query loop or start blank.'
-				) }
+				className="block-editor-media-placeholder"
+				icon={ ! isSmallContainer && icon }
+				label={ ! isSmallContainer && label }
+				instructions={
+					! isSmallContainer &&
+					__(
+						'Choose a pattern for the terms query loop or start blank.'
+					)
+				}
+				withIllustration={ isSmallContainer }
 			>
-				{ ! taxonomy ? (
-					<TaxonomyPicker
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<>
-						{ !! hasPatterns && (
-							<Button
-								__next40pxDefaultSize
-								variant="primary"
-								onClick={ openPatternSelectionModal }
-							>
-								{ __( 'Choose' ) }
-							</Button>
-						) }
-						<Button
-							__next40pxDefaultSize
-							variant="secondary"
-							onClick={ () => {
-								setIsStartingBlank( true );
-							} }
-						>
-							{ __( 'Start blank' ) }
-						</Button>
-					</>
+				{ !! hasPatterns && ! isSmallContainer && (
+					<Button
+						__next40pxDefaultSize
+						variant="primary"
+						onClick={ openPatternSelectionModal }
+					>
+						{ __( 'Choose' ) }
+					</Button>
+				) }
+				{ ! isSmallContainer && (
+					<Button
+						__next40pxDefaultSize
+						variant="secondary"
+						onClick={ () => {
+							setIsStartingBlank( true );
+						} }
+					>
+						{ __( 'Start blank' ) }
+					</Button>
 				) }
 			</Placeholder>
 		</div>
