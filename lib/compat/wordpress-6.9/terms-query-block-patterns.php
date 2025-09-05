@@ -7,6 +7,12 @@
  * @subpackage Patterns
  */
 
+/**
+ * Registers block patterns for the Terms Query block.
+ *
+ * @since 6.9.0
+ * @access private
+ */
 function gutenberg_terms_query_register_block_patterns() {
 	$should_register_core_patterns = get_theme_support( 'core-block-patterns' );
 
