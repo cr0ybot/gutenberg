@@ -46,7 +46,7 @@ function gutenberg_terms_query_register_block_patterns() {
 					</div>
 					<!-- /wp:terms-query -->',
 			),
-			'term-query-cat-list' => array(
+			'term-query-cat-list'         => array(
 				'title'      => _x( 'Category List', 'Block pattern title' ),
 				'blockTypes' => array( 'core/terms-query' ),
 				'categories' => array( 'query' ),
@@ -71,7 +71,7 @@ function gutenberg_terms_query_register_block_patterns() {
 					</div>
 					<!-- /wp:terms-query -->',
 			),
-			'term-query-tag-links' => array(
+			'term-query-tag-links'        => array(
 				'title'      => _x( 'Tag Links', 'Block pattern title' ),
 				'blockTypes' => array( 'core/terms-query' ),
 				'categories' => array( 'query' ),
