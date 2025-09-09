@@ -24,7 +24,7 @@ function gutenberg_terms_query_register_block_patterns() {
 				'categories' => array( 'query' ),
 				'content'    => '<!-- wp:terms-query -->
 					<div class="wp-block-terms-query">
-					<!-- wp:term-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch","flexWrap":"nowrap"}} -->
+					<!-- wp:term-template {"style":{"spacing":{"blockGap":"2.5rem"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch","flexWrap":"nowrap"}} -->
 					<!-- wp:group {"layout":{"type":"flex","orientation":"vertical","flexWrap":"nowrap","justifyContent":"stretch"}} -->
 					<div class="wp-block-group">
 					<!-- wp:heading {"metadata":{"bindings":{"content":{"source":"core/term-data","args":{"key":"name"}}}}} -->
@@ -35,8 +35,8 @@ function gutenberg_terms_query_register_block_patterns() {
 					<!-- /wp:paragraph -->
 					<!-- wp:buttons -->
 					<div class="wp-block-buttons">
-					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}}}},"className":"is-style-fill"} -->
-					<div class="wp-block-button is-style-fill"><a class="wp-block-button__link wp-element-button">View posts</a></div>
+					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}}}}} -->
+					<div class="wp-block-button"><a class="wp-block-button__link wp-element-button">' . _x( 'View posts', 'Block pattern button text' ) . '</a></div>
 					<!-- /wp:button -->
 					</div>
 					<!-- /wp:buttons -->
