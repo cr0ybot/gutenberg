@@ -73,11 +73,11 @@ function gutenberg_terms_query_register_block_patterns() {
 				'categories' => array( 'query' ),
 				'content'    => '<!-- wp:terms-query {"termQuery":{"taxonomy":"post_tag","hideEmpty":true}} -->
 					<div class="wp-block-terms-query">
-					<!-- wp:term-template {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"horizontal","justifyContent":"left","flexWrap":"wrap"}} -->
+					<!-- wp:term-template {"style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"flex","orientation":"horizontal","justifyContent":"left","flexWrap":"wrap"}} -->
 					<!-- wp:buttons -->
 					<div class="wp-block-buttons">
-					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}},"text":{"source":"core/term-data","args":{"key":"name"}}}},"className":"is-style-outline","style":{"spacing":{"padding":{"left":"var:preset|spacing|30","right":"var:preset|spacing|30","top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"}}},"fontSize":"small"} -->
-					<div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-small-font-size has-custom-font-size wp-element-button" style="padding-top:var(--wp--preset--spacing--20);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--20);padding-left:var(--wp--preset--spacing--30)"></a></div>
+					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}},"text":{"source":"core/term-data","args":{"key":"name"}}}}} -->
+					<div class="wp-block-button"><a class="wp-block-button__link wp-element-button"></a></div>
 					<!-- /wp:button -->
 					</div>
 					<!-- /wp:buttons -->
