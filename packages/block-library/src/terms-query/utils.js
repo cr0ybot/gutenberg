@@ -185,9 +185,17 @@ export const getTransformedBlocksFromPattern = (
 		if ( block.name === 'core/terms-query' ) {
 			block.attributes.termQuery = {
 				...block.attributes.termQuery,
-				taxonomy,
-				parent,
 				inherit,
+				/**
+				 * Only override the taxonomy if it's not 'category', which is
+				 * default. Without this, all patterns inserted will use the
+				 * category taxonomy instead of retaining the pattern's taxonomy.
+				 */
+				...( taxonomy !== 'category' && { taxonomy } ),
+				/**
+				 * Only override parent if set (handles default 0 and falsey).
+				 */
+				...( parent && { parent } ),
 			};
 			queryClientIds.push( block.clientId );
 		}
