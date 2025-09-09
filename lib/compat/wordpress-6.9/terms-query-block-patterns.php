@@ -50,20 +50,16 @@ function gutenberg_terms_query_register_block_patterns() {
 				'title'      => _x( 'Category List', 'Block pattern title' ),
 				'blockTypes' => array( 'core/terms-query' ),
 				'categories' => array( 'query' ),
-				'content'    => '<!-- wp:terms-query {"termQuery":{"taxonomy":"category","hierarchical":true}} -->
+				'content'    => '<!-- wp:terms-query {"termQuery":{"taxonomy":"category","hierarchical":true,"hideEmpty":false}} -->
 					<div class="wp-block-terms-query">
-					<!-- wp:term-template {"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch","flexWrap":"nowrap"}} -->
-					<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"left","verticalAlignment":"center"}} -->
+					<!-- wp:term-template {"layout":{"type":"constrained"}} -->
+					<!-- wp:group {"style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
 					<div class="wp-block-group">
-					<!-- wp:buttons {"layout":{"type":"flex","verticalAlignment":"center"}} -->
-					<div class="wp-block-buttons">
-					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}},"text":{"source":"core/term-data","args":{"key":"name"}}}},"className":"is-style-outline","style":{"spacing":{"padding":{"left":"0","right":"0","top":"0","bottom":"0"}},"border":{"color":"#00000000","radius":{"topLeft":"0px","topRight":"0px","bottomLeft":"0px","bottomRight":"0px"}}}} -->
-					<div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-border-color wp-element-button" style="border-color:#00000000;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">View posts</a></div>
-					<!-- /wp:button -->
-					</div>
-					<!-- /wp:buttons -->
-					<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"core/term-data","args":{"key":"count"}}}},"fontSize":"medium"} -->
-					<p class="has-medium-font-size"></p>
+					<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"core/term-data","args":{"key":"name"}}}}} -->
+					<p></p>
+					<!-- /wp:paragraph -->
+					<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"core/term-data","args":{"key":"count"}}}}} -->
+					<p></p>
 					<!-- /wp:paragraph -->
 					</div>
 					<!-- /wp:group -->
