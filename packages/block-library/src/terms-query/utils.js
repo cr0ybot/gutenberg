@@ -68,6 +68,8 @@ export const getTransformedBlocksFromPattern = (
  * If there are no such patterns, the default ones for Query Loop are going
  * to be suggested.
  *
+ * @todo Consider moving to shared utils for both terms-query and query block.
+ *
  * @param {string} clientId   The block's client ID.
  * @param {Object} attributes The block's attributes.
  * @return {string} The block name to be used in the patterns suggestions.
@@ -120,6 +122,8 @@ export function useBlockNameForPatterns( clientId, attributes ) {
  * If the user selects this variation, the `namespace` attribute will be overridden by the
  * main `inserter` variation.
  *
+ * @todo Consider moving to shared utils for both terms-query and query block.
+ *
  * @param {Object} attributes The block's attributes.
  * @return {WPBlockVariation[]} The block variations to be suggested in setup flow, when clicking to `start blank`.
  */
@@ -162,6 +166,8 @@ export function useScopedBlockVariations( attributes ) {
 
 /**
  * Hook that returns the block patterns for a specific block type.
+ *
+ * @todo Consider moving to shared utils for both terms-query and query block.
  *
  * @param {string} clientId The block's client ID.
  * @param {string} name     The block type name.
