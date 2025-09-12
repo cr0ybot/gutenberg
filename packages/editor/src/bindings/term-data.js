@@ -35,6 +35,7 @@ function createDataFields( termDataValues, idValue ) {
 					? `<a href="${ termDataValues.link }">${ termDataValues.name }</a>`
 					: termDataValues?.nameWithLink,
 			type: 'string',
+			markup: true,
 		},
 		slug: {
 			label: __( 'Slug' ),
