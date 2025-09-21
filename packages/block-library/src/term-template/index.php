@@ -56,8 +56,6 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		return '';
 	}
 
-	echo '<pre>' . print_r( $terms, true ) . '</pre>';
-
 	// Handle hierarchical list.
 	$is_hierarchical = ! empty( $query['hierarchical'] );
 
