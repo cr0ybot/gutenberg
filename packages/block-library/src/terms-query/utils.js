@@ -37,7 +37,10 @@ export const getTransformedBlocksFromPattern = (
 		if ( block.name === 'core/terms-query' ) {
 			block.attributes.termQuery = {
 				...block.attributes.termQuery,
-				inherit,
+				/**
+				 * Only override inherit if defined.
+				 */
+				...( inherit !== undefined && { inherit } ),
 				/**
 				 * Only override the taxonomy if it's not 'category', which is
 				 * default. Without this, all patterns inserted will use the
