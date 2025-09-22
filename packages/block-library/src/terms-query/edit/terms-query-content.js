@@ -19,12 +19,8 @@ import TermsQueryToolbar from './terms-query-toolbar';
 
 const TEMPLATE = [ [ 'core/term-template' ] ];
 
-export default function TermsQueryContent( {
-	attributes,
-	setAttributes,
-	clientId,
-	name,
-} ) {
+export default function TermsQueryContent( props ) {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		termQueryId,
 		termQuery = {},
@@ -69,14 +65,7 @@ export default function TermsQueryContent( {
 					hasInnerBlocks
 				/>
 			</BlockControls>
-			<TermsQueryInspectorControls
-				name={ name }
-				attributes={ attributes }
-				setQuery={ setQuery }
-				setAttributes={ setAttributes }
-				clientId={ clientId }
-				tagName={ TagName }
-			/>
+			<TermsQueryInspectorControls { ...props } setQuery={ setQuery } />
 			<TagName { ...innerBlocksProps } />
 		</>
 	);

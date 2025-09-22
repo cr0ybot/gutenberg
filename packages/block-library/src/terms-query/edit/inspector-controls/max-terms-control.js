@@ -2,43 +2,26 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	__experimentalToolsPanelItem as ToolsPanelItem,
-	RangeControl,
-} from '@wordpress/components';
+import { RangeControl } from '@wordpress/components';
 
-export default function MaxTermsControl( { attributes, setQuery } ) {
-	const { termQuery } = attributes;
-
-	// Only show pagination control when not hierarchical.
-	if ( termQuery.hierarchical ) {
-		return null;
-	}
-
+export default function MaxTermsControl( { perPage, onChange } ) {
 	return (
-		<ToolsPanelItem
-			hasValue={ () => termQuery.perPage !== 10 }
+		<RangeControl
+			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Max terms' ) }
-			onDeselect={ () => setQuery( { perPage: 10 } ) }
-			isShownByDefault
-		>
-			<RangeControl
-				__nextHasNoMarginBottom
-				__next40pxDefaultSize
-				label={ __( 'Max terms' ) }
-				value={ termQuery.perPage }
-				min={ 0 }
-				max={ 100 }
-				onChange={ ( perPage ) => {
-					// Show all terms (-1) when 0 is selected.
-					setQuery( {
-						perPage: perPage === 0 ? -1 : perPage,
-					} );
-				} }
-				help={ __(
-					'Limit the number of terms you want to show. To show all terms, use 0 (zero).'
-				) }
-			/>
-		</ToolsPanelItem>
+			value={ perPage }
+			min={ 0 }
+			max={ 100 }
+			onChange={ ( newPerPage ) => {
+				// Show all terms (-1) when 0 is selected.
+				onChange( {
+					perPage: newPerPage === 0 ? -1 : newPerPage,
+				} );
+			} }
+			help={ __(
+				'Limit the number of terms you want to show. To show all terms, use 0 (zero).'
+			) }
+		/>
 	);
 }

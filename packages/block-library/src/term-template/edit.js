@@ -8,7 +8,7 @@ import clsx from 'clsx';
  */
 import { memo, useMemo, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
@@ -16,7 +16,13 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { useEntityRecords } from '@wordpress/core-data';
+import { Spinner } from '@wordpress/components';
+import { store as coreStore } from '@wordpress/core-data';
+
+/**
+ * Internal dependencies
+ */
+import { getQueryContextFromTemplate } from './utils';
 
 const TEMPLATE = [
 	[
@@ -119,128 +125,136 @@ function TermTemplateBlockPreview( {
 // Prevent re-rendering of the block preview when the terms data changes.
 const MemoizedTermTemplateBlockPreview = memo( TermTemplateBlockPreview );
 
-/**
- * Builds a hierarchical tree structure from flat terms array.
- *
- * @param {Array} terms Array of term objects.
- * @return {Array} Tree structure with parent/child relationships.
- */
-function buildTermsTree( terms ) {
-	const termsById = {};
-	const rootTerms = [];
-
-	terms.forEach( ( term ) => {
-		termsById[ term.id ] = {
-			term,
-			children: [],
-		};
-	} );
-
-	terms.forEach( ( term ) => {
-		if ( term.parent && termsById[ term.parent ] ) {
-			termsById[ term.parent ].children.push( termsById[ term.id ] );
-		} else {
-			rootTerms.push( termsById[ term.id ] );
-		}
-	} );
-
-	return rootTerms;
-}
-
-/**
- * Renders a single term node and its children recursively.
- *
- * @param {Object}   termNode   Term node with term object and children.
- * @param {Function} renderTerm Function to render individual terms.
- * @return {JSX.Element} Rendered term node with children.
- */
-function renderTermNode( termNode, renderTerm ) {
-	return (
-		<li className="wp-block-term">
-			{ renderTerm( termNode.term ) }
-			{ termNode.children.length > 0 && (
-				<ul>
-					{ termNode.children.map( ( child ) =>
-						renderTermNode( child, renderTerm )
-					) }
-				</ul>
-			) }
-		</li>
-	);
-}
-
-/**
- * Checks if a term is the currently active term.
- *
- * @param {number} termId               The term ID to check.
- * @param {number} activeBlockContextId The currently active block context ID.
- * @param {Array}  blockContexts        Array of block contexts.
- * @return {boolean} True if the term is active, false otherwise.
- */
-function isActiveTerm( termId, activeBlockContextId, blockContexts ) {
-	return termId === ( activeBlockContextId || blockContexts[ 0 ]?.termId );
-}
-
 export default function TermTemplateEdit( {
 	clientId,
 	context: {
-		termsToShow,
 		termQuery: {
 			taxonomy,
+			perPage,
 			order,
 			orderBy,
+			include,
+			exclude,
 			hideEmpty,
-			hierarchical,
-			perPage = 10,
+			inherit,
+			pages,
+			parent = 0,
+			// Gather extra query args to pass to the REST API call.
+			// This way extenders of Term Query Loop can add their own query args,
+			// and have accurate previews in the editor.
+			// Noting though that these args should either be supported by the
+			// REST API or be handled by custom REST filters like `rest_{$this->taxonomy}_query`.
+			...restQueryArgs
 		} = {},
+		termId,
+		postId,
+		templateSlug,
+		previewTaxonomy,
 	},
 	__unstableLayoutClassNames,
 } ) {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 
-	const queryArgs = {
-		order,
-		orderby: orderBy,
-		hide_empty: hideEmpty,
-		// To preview the data the closest to the frontend, we fetch the largest number of terms
-		// and limit them during rendering. This is because WP_Term_Query fetches data in hierarchical manner,
-		// while in editor we build the hierarchy manually. It also allows us to avoid re-fetching data when max terms changes.
-		per_page: 100,
-	};
-
-	const { records: terms, isResolving } = useEntityRecords(
-		'taxonomy',
-		taxonomy,
-		queryArgs
-	);
-
-	const filteredTerms = useMemo( () => {
-		if ( ! terms ) {
-			return [];
-		}
-		if ( termsToShow === 'top-level' ) {
-			return terms.filter( ( term ) => ! term.parent );
-		}
-		if ( termsToShow === 'subterms' ) {
-			return terms.filter( ( term ) => term.parent );
-		}
-		return terms;
-	}, [ terms, termsToShow ] );
-
-	const { blocks } = useSelect(
+	const { terms, blocks } = useSelect(
 		( select ) => {
+			const { getEntityRecords } = select( coreStore );
 			const { getBlocks } = select( blockEditorStore );
 
+			const queryArgs = {
+				parent: parent || 0,
+				order,
+				orderby: orderBy,
+				hide_empty: hideEmpty,
+				// To preview the data the closest to the frontend, we fetch the largest number of terms
+				// and limit them during rendering. This is because WP_Term_Query fetches data in hierarchical manner,
+				// while in editor we build the hierarchy manually. It also allows us to avoid re-fetching data when max terms changes.
+				per_page: 100,
+			};
+
+			// If `inherit` is truthy, adjust the query conditionally to create a better preview.
+			let currentTaxonomy = taxonomy;
+			if ( inherit ) {
+				if ( termId ) {
+					// If termId is already provided in context, use that as parent.
+					queryArgs.parent = termId;
+				} else {
+					const { isSingular, templateType, templateQuery } =
+						getQueryContextFromTemplate( templateSlug );
+
+					if ( isSingular ) {
+						// If we're on a post, get only the terms for the current post.
+						queryArgs.post = postId;
+					} else {
+						// Inherit taxonomy from taxonomy archive template slug.
+						currentTaxonomy = templateType;
+						// If we're on a specific term archive template, fetch the term ID to use as the parent.
+						if ( templateQuery ) {
+							const templateTaxonomy = getEntityRecords(
+								'taxonomy',
+								currentTaxonomy,
+								{
+									context: 'view',
+									per_page: 1,
+									_fields: [ 'id' ],
+									slug: templateQuery,
+								}
+							);
+
+							if ( templateTaxonomy ) {
+								queryArgs.parent =
+									templateTaxonomy[ 0 ]?.id ?? 0;
+							}
+						}
+					}
+				}
+			}
+
+			// When we preview Term Query Loop blocks we should prefer the current
+			// block's taxonomy, which is passed through block context.
+			const usedTaxonomy = previewTaxonomy || currentTaxonomy;
+
 			return {
+				terms: [
+					...( getEntityRecords( 'taxonomy', usedTaxonomy, {
+						...queryArgs,
+						...restQueryArgs,
+					} ) ?? [] ),
+				],
 				blocks: getBlocks( clientId ),
 			};
 		},
-		[ clientId ]
+		[
+			taxonomy,
+			order,
+			orderBy,
+			hideEmpty,
+			parent,
+			inherit,
+			restQueryArgs,
+			clientId,
+			termId,
+			postId,
+			templateSlug,
+			previewTaxonomy,
+		]
 	);
 
 	const blockProps = useBlockProps( {
 		className: __unstableLayoutClassNames,
 	} );
+
+	// Limit terms to the perPage value and filter out excludes.
+	const filteredTerms = useMemo( () => {
+		if ( ! terms ) {
+			return [];
+		}
+		return terms.slice( 0, perPage ).filter( ( term ) => {
+			if ( exclude && exclude.includes( term.id ) ) {
+				return false;
+			}
+			return true;
+		} );
+	}, [ terms, exclude, perPage ] );
 
 	const blockContexts = useMemo(
 		() =>
@@ -253,97 +267,56 @@ export default function TermTemplateEdit( {
 		[ filteredTerms, taxonomy ]
 	);
 
-	if ( isResolving ) {
+	if ( ! filteredTerms ) {
 		return (
-			<ul { ...blockProps }>
-				<li className="wp-block-term term-loading">
-					<div className="term-loading-placeholder" />
-				</li>
-				<li className="wp-block-term term-loading">
-					<div className="term-loading-placeholder" />
-				</li>
-				<li className="wp-block-term term-loading">
-					<div className="term-loading-placeholder" />
-				</li>
-			</ul>
-		);
-	}
-
-	if ( ! filteredTerms?.length ) {
-		return <p { ...blockProps }> { __( 'No terms found.' ) }</p>;
-	}
-
-	const renderTerm = ( term ) => {
-		const blockContext = {
-			taxonomy,
-			termId: term.id,
-			classList: `term-${ term.id }`,
-			termData: term,
-		};
-
-		return (
-			<BlockContextProvider key={ term.id } value={ blockContext }>
-				{ isActiveTerm(
-					term.id,
-					activeBlockContextId,
-					blockContexts
-				) ? (
-					<TermTemplateInnerBlocks
-						classList={ blockContext.classList }
-					/>
-				) : null }
-				<MemoizedTermTemplateBlockPreview
-					blocks={ blocks }
-					blockContextId={ term.id }
-					classList={ blockContext.classList }
-					setActiveBlockContextId={ setActiveBlockContextId }
-					isHidden={ isActiveTerm(
-						term.id,
-						activeBlockContextId,
-						blockContexts
+			<div { ...blockProps }>
+				<p className="wp-block-term-template__loading">
+					<Spinner />
+					{ sprintf(
+						/* translators: %s: taxonomy slug */
+						__( 'Loading %s terms…' ),
+						taxonomy
 					) }
-				/>
-			</BlockContextProvider>
+				</p>
+			</div>
 		);
-	};
+	}
+
+	if ( ! filteredTerms.length ) {
+		return <p { ...blockProps }> { __( 'No results found.' ) }</p>;
+	}
 
 	return (
 		<>
 			<ul { ...blockProps }>
-				{ hierarchical
-					? buildTermsTree( filteredTerms ).map( ( termNode ) =>
-							renderTermNode( termNode, renderTerm )
-					  )
-					: blockContexts &&
-					  blockContexts
-							.slice( 0, perPage )
-							.map( ( blockContext ) => (
-								<BlockContextProvider
-									key={ blockContext.termId }
-									value={ blockContext }
-								>
-									{ blockContext.termId ===
+				{ blockContexts &&
+					blockContexts.map( ( blockContext ) => (
+						<BlockContextProvider
+							key={ blockContext.termId }
+							value={ blockContext }
+						>
+							{ blockContext.termId ===
+							( activeBlockContextId ||
+								blockContexts[ 0 ]?.termId ) ? (
+								<TermTemplateInnerBlocks
+									classList={ blockContext.classList }
+								/>
+							) : null }
+							<MemoizedTermTemplateBlockPreview
+								blocks={ blocks }
+								blockContextId={ blockContext.termId }
+								classList={ blockContext.classList }
+								setActiveBlockContextId={
+									setActiveBlockContextId
+								}
+								isHidden={
+									blockContext.termId ===
 									( activeBlockContextId ||
-										blockContexts[ 0 ]?.termId ) ? (
-										<TermTemplateInnerBlocks
-											classList={ blockContext.classList }
-										/>
-									) : null }
-									<MemoizedTermTemplateBlockPreview
-										blocks={ blocks }
-										blockContextId={ blockContext.termId }
-										classList={ blockContext.classList }
-										setActiveBlockContextId={
-											setActiveBlockContextId
-										}
-										isHidden={
-											blockContext.termId ===
-											( activeBlockContextId ||
-												blockContexts[ 0 ]?.termId )
-										}
-									/>
-								</BlockContextProvider>
-							) ) }
+										blockContexts[ 0 ]?.termId )
+								}
+							/>
+						</BlockContextProvider>
+					) ) }
 			</ul>
 		</>
 	);

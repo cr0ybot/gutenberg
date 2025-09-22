@@ -5,22 +5,14 @@
 	"name": "core/term-template",
 	"title": "Term Template",
 	"category": "theme",
-	"ancestor": [
-		"core/terms-query"
-	],
+	"ancestor": [ "core/terms-query" ],
 	"description": "Contains the block elements used to render a taxonomy term, like the name, description, and more.",
 	"textdomain": "default",
-	"usesContext": [
-		"postId",
-		"termQuery"
-	],
+	"usesContext": [ "postId", "termQuery", "previewTaxonomy" ],
 	"supports": {
 		"reusable": false,
 		"html": false,
-		"align": [
-			"wide",
-			"full"
-		],
+		"align": [ "wide", "full" ],
 		"layout": {
 			"allowSwitching": true,
 			"allowEditing": true,

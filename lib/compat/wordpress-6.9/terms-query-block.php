@@ -23,8 +23,7 @@ function gutenberg_build_query_vars_from_terms_query_block( $block, $page = 1 ) 
 		'order'      => 'asc',
 		'orderby'    => 'name',
 		'hide_empty' => true,
-		'include'    => array(),
-		'exclude'    => array(),
+		'parent'     => 0,
 	);
 
 	if ( isset( $block->context['termQuery'] ) ) {
@@ -76,24 +75,10 @@ function gutenberg_build_query_vars_from_terms_query_block( $block, $page = 1 ) 
 			$query['hide_empty'] = false;
 		}
 		if (
-			! empty( $block->context['termQuery']['hierarchical'] )
-			&& is_taxonomy_hierarchical( $query['taxonomy'] )
+			is_taxonomy_hierarchical( $query['taxonomy'] )
+			&& isset( $block->context['termQuery']['parent'] )
 		) {
-			/**
-			 * The `parent` arg limits results to direct children, so if
-			 * `hierarchical` is set to true, we use the `child_of` arg instead.
-			 */
-			if (
-				! empty( $block->context['termQuery']['hierarchical'] )
-				&& isset( $block->context['termQuery']['parent'] )
-			) {
-				$query['child_of']     = $block->context['termQuery']['parent'];
-				$query['hierarchical'] = true;
-			} elseif ( ! empty( $block->context['termQuery']['hierarchical'] ) ) {
-				$query['hierarchical'] = true;
-			} elseif ( isset( $block->context['termQuery']['parent'] ) ) {
-				$query['parent'] = $block->context['termQuery']['parent'];
-			}
+			$query['parent'] = $block->context['termQuery']['parent'] || 0;
 		}
 	}
 

@@ -2,48 +2,39 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalToolsPanel as ToolsPanel } from '@wordpress/components';
+import {
+	__experimentalToolsPanel as ToolsPanel,
+	__experimentalToolsPanelItem as ToolsPanelItem,
+} from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { store as coreStore } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import { useToolsPanelDropdownMenuProps } from '../../../utils/hooks';
 import TaxonomyControl from './taxonomy-control';
-import OrderingControls from './ordering-controls';
-import DisplayOptions from './display-options';
-import HierarchyControl from './hierarchy-control';
+import OrderControls from './order-controls';
+import InheritControl from './inherit-control';
 import EmptyTermsControl from './empty-terms-control';
 import MaxTermsControl from './max-terms-control';
 import AdvancedControls from './advanced-controls';
 
-const usePublicTaxonomies = () => {
-	const taxonomies = useSelect(
-		( select ) => select( coreStore ).getTaxonomies( { per_page: -1 } ),
-		[]
-	);
-	return useMemo( () => {
-		return (
-			taxonomies?.filter(
-				( { visibility } ) => visibility?.publicly_queryable
-			) || []
-		);
-	}, [ taxonomies ] );
-};
-
-export default function TermsQueryInspectorControls( {
-	attributes,
-	setQuery,
-	setAttributes,
-	TagName,
-	clientId,
-} ) {
-	const { termQuery, termsToShow } = attributes;
+export default function TermsQueryInspectorControls( props ) {
+	const { attributes, setQuery, setAttributes, TagName, clientId, context } =
+		props;
+	const { termQuery } = attributes;
+	const {
+		taxonomy,
+		perPage,
+		order,
+		orderBy,
+		hideEmpty,
+		inherit = false,
+	} = termQuery;
+	const { termId } = context;
 	const dropdownMenuProps = useToolsPanelDropdownMenuProps();
-	const taxonomies = usePublicTaxonomies();
 
 	const { templateSlug } = useSelect( ( select ) => {
 		// @wordpress/block-library should not depend on @wordpress/editor.
@@ -58,21 +49,23 @@ export default function TermsQueryInspectorControls( {
 		};
 	}, [] );
 
-	const taxonomyOptions = taxonomies.map( ( taxonomy ) => ( {
-		label: taxonomy.name,
-		value: taxonomy.slug,
-	} ) );
-
-	const isTaxonomyHierarchical = taxonomies.find(
-		( taxonomy ) => taxonomy.slug === termQuery.taxonomy
-	)?.hierarchical;
+	const isTaxonomyHierarchical = useSelect(
+		( select ) => {
+			const taxObject = select( coreStore ).getTaxonomy( taxonomy );
+			return taxObject?.hierarchical;
+		},
+		[ taxonomy ]
+	);
 
 	const isTaxonomyMatchingTemplate =
-		typeof templateSlug === 'string' &&
-		templateSlug.includes( termQuery.taxonomy );
+		typeof templateSlug === 'string' && templateSlug.includes( taxonomy );
 
-	const displaySubtermsControl =
-		isTaxonomyHierarchical && isTaxonomyMatchingTemplate;
+	/**
+	 * Used to determine if the block is either nested in another Terms Query or
+	 * in a Post/Term Archive context. In these contexts, inherit defaults to true.
+	 */
+	const isNested =
+		( isTaxonomyHierarchical && !! termId ) || isTaxonomyMatchingTemplate;
 
 	return (
 		<>
@@ -89,42 +82,71 @@ export default function TermsQueryInspectorControls( {
 								hierarchical: false,
 								parent: false,
 								perPage: 10,
+								inherit: isNested,
 							},
-							termsToShow: 'all',
 						} );
 					} }
 					dropdownMenuProps={ dropdownMenuProps }
 				>
-					<TaxonomyControl
-						attributes={ attributes }
-						setQuery={ setQuery }
-						setAttributes={ setAttributes }
-						taxonomyOptions={ taxonomyOptions }
-					/>
-					<OrderingControls
-						attributes={ attributes }
-						setQuery={ setQuery }
-					/>
-					<EmptyTermsControl
-						attributes={ attributes }
-						setQuery={ setQuery }
-					/>
-					<DisplayOptions
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						displayTopLevelControl={ isTaxonomyHierarchical }
-						displaySubtermsControl={ displaySubtermsControl }
-					/>
-					<MaxTermsControl
-						attributes={ attributes }
-						setQuery={ setQuery }
-					/>
-					{ isTaxonomyHierarchical && termsToShow === 'all' && (
-						<HierarchyControl
-							attributes={ attributes }
-							setQuery={ setQuery }
+					<ToolsPanelItem
+						hasValue={ () => ! inherit }
+						label={ __( 'Query type' ) }
+						onDeselect={ () => setQuery( { inherit: isNested } ) }
+						isShownByDefault
+					>
+						<InheritControl
+							inherit={ inherit }
+							onChange={ setQuery }
 						/>
-					) }
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						hasValue={ () => taxonomy !== 'category' }
+						label={ __( 'Taxonomy' ) }
+						onDeselect={ () => {
+							setQuery( { taxonomy: 'category' } );
+						} }
+						isShownByDefault
+					>
+						<TaxonomyControl
+							taxonomy={ taxonomy }
+							onChange={ setQuery }
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						hasValue={ () => orderBy !== 'name' || order !== 'asc' }
+						label={ __( 'Order by' ) }
+						onDeselect={ () =>
+							setQuery( { orderBy: 'name', order: 'asc' } )
+						}
+						isShownByDefault
+					>
+						<OrderControls
+							{ ...{ order, orderBy } }
+							onChange={ setQuery }
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						hasValue={ () => hideEmpty !== true }
+						label={ __( 'Show empty terms' ) }
+						onDeselect={ () => setQuery( { hideEmpty: true } ) }
+						isShownByDefault
+					>
+						<EmptyTermsControl
+							hideEmpty={ hideEmpty }
+							onChange={ setQuery }
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						hasValue={ () => perPage !== 10 }
+						label={ __( 'Max terms' ) }
+						onDeselect={ () => setQuery( { perPage: 10 } ) }
+						isShownByDefault
+					>
+						<MaxTermsControl
+							perPage={ perPage }
+							onChange={ setQuery }
+						/>
+					</ToolsPanelItem>
 				</ToolsPanel>
 			</InspectorControls>
 			<AdvancedControls
