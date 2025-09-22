@@ -244,8 +244,8 @@ export default function TermTemplateEdit( {
 
 	// Limit terms to the perPage value and filter out excludes.
 	const filteredTerms = useMemo( () => {
-		if ( ! terms ) {
-			return false;
+		if ( null === terms ) {
+			return null;
 		}
 		return terms.slice( 0, perPage ).filter( ( term ) => {
 			if ( exclude && exclude.includes( term.id ) ) {
