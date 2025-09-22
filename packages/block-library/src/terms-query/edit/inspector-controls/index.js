@@ -79,8 +79,7 @@ export default function TermsQueryInspectorControls( props ) {
 								order: 'asc',
 								orderBy: 'name',
 								hideEmpty: true,
-								hierarchical: false,
-								parent: false,
+								parent: 0,
 								perPage: 10,
 								inherit: isNested,
 							},
@@ -89,7 +88,7 @@ export default function TermsQueryInspectorControls( props ) {
 					dropdownMenuProps={ dropdownMenuProps }
 				>
 					<ToolsPanelItem
-						hasValue={ () => ! inherit }
+						hasValue={ () => inherit && ! isNested }
 						label={ __( 'Query type' ) }
 						onDeselect={ () => setQuery( { inherit: isNested } ) }
 						isShownByDefault
