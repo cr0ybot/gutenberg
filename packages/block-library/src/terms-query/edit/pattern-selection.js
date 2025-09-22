@@ -61,9 +61,9 @@ export default function PatternSelection( {
 	 */
 	const blockPreviewContext = useMemo(
 		() => ( {
-			previewTaxonomy: attributes.query.taxonomy,
+			previewTaxonomy: attributes.termQuery.taxonomy,
 		} ),
-		[ attributes.query.taxonomy ]
+		[ attributes.termQuery.taxonomy ]
 	);
 	const filteredBlockPatterns = useMemo( () => {
 		return searchPatterns( blockPatterns, searchValue );
