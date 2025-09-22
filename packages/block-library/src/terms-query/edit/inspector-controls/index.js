@@ -7,8 +7,6 @@ import {
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
-import { store as coreStore } from '@wordpress/core-data';
-import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -26,46 +24,25 @@ export default function TermsQueryInspectorControls( props ) {
 		props;
 	const { termQuery } = attributes;
 	const {
-		taxonomy,
+		taxonomy: initialTaxonomy,
 		perPage,
 		order,
 		orderBy,
 		hideEmpty,
-		inherit = false,
+		inherit: initialInherit,
 	} = termQuery;
-	const { termId } = context;
+	const { termId, termData } = context;
 	const dropdownMenuProps = useToolsPanelDropdownMenuProps();
 
-	const { templateSlug } = useSelect( ( select ) => {
-		// @wordpress/block-library should not depend on @wordpress/editor.
-		// Blocks can be loaded into a *non-post* block editor, so to avoid
-		// declaring @wordpress/editor as a dependency, we must access its
-		// store by string.
-		// The solution here is to split WP specific blocks from generic blocks.
-		// eslint-disable-next-line @wordpress/data-no-store-string-literals
-		const { getEditedPostSlug } = select( 'core/editor' );
-		return {
-			templateSlug: getEditedPostSlug(),
-		};
-	}, [] );
-
-	const isTaxonomyHierarchical = useSelect(
-		( select ) => {
-			const taxObject = select( coreStore ).getTaxonomy( taxonomy );
-			return taxObject?.hierarchical;
-		},
-		[ taxonomy ]
-	);
-
-	const isTaxonomyMatchingTemplate =
-		typeof templateSlug === 'string' && templateSlug.includes( taxonomy );
+	/**
+	 * Inherit taxonomy if not defined.
+	 */
+	const taxonomy = initialTaxonomy || ( termData?.taxonomy ?? 'category' );
 
 	/**
-	 * Used to determine if the block is either nested in another Terms Query or
-	 * in a Post/Term Archive context. In these contexts, inherit defaults to true.
+	 * Default to inheriting the query if the block is nested and inherit is undefined.
 	 */
-	const isNested =
-		( isTaxonomyHierarchical && !! termId ) || isTaxonomyMatchingTemplate;
+	const inherit = initialInherit === undefined ? !! termId : initialInherit;
 
 	return (
 		<>
@@ -81,16 +58,16 @@ export default function TermsQueryInspectorControls( props ) {
 								hideEmpty: true,
 								parent: 0,
 								perPage: 10,
-								inherit: isNested,
+								inherit,
 							},
 						} );
 					} }
 					dropdownMenuProps={ dropdownMenuProps }
 				>
 					<ToolsPanelItem
-						hasValue={ () => inherit && ! isNested }
+						hasValue={ () => initialInherit !== inherit }
 						label={ __( 'Query type' ) }
-						onDeselect={ () => setQuery( { inherit: isNested } ) }
+						onDeselect={ () => setQuery( { inherit } ) }
 						isShownByDefault
 					>
 						<InheritControl

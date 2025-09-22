@@ -34,7 +34,7 @@
 			"type": "string"
 		}
 	},
-	"usesContext": [ "termId", "postId", "templateSlug" ],
+	"usesContext": [ "termId", "termData", "postId", "templateSlug" ],
 	"providesContext": {
 		"termQueryId": "termQueryId",
 		"termQuery": "termQuery"

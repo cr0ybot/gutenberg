@@ -129,14 +129,14 @@ export default function TermTemplateEdit( {
 	clientId,
 	context: {
 		termQuery: {
-			taxonomy,
+			taxonomy: initialTaxonomy,
 			perPage,
 			order,
 			orderBy,
 			include,
 			exclude,
-			hideEmpty,
-			inherit,
+			hideEmpty = true,
+			inherit: initialInherit,
 			pages,
 			parent = 0,
 			// Gather extra query args to pass to the REST API call.
@@ -155,6 +155,19 @@ export default function TermTemplateEdit( {
 	__unstableLayoutClassNames,
 } ) {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
+
+	/**
+	 * Default to inheriting the taxonomy if nested.
+	 */
+	const taxonomy =
+		initialTaxonomy === 'category'
+			? termData?.taxonomy ?? 'category'
+			: initialTaxonomy;
+
+	/**
+	 * Default to inheriting the query if the block is nested and inherit is undefined.
+	 */
+	const inherit = initialInherit === undefined ? !! termId : initialInherit;
 
 	const { terms, blocks } = useSelect(
 		( select ) => {
