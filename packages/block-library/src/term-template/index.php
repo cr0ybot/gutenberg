@@ -30,10 +30,6 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 	$query      = $query_block_context['termQuery'];
 	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block );
 
-	echo '<pre>';
-	var_dump( $query_args );
-	echo '</pre>';
-
 	// Inheritance order: block context, post context, taxonomy archive context.
 	$inherit      = isset( $block->context['query']['inherit'] ) && $block->context['query']['inherit'];
 	$inherit_from = 'none';
