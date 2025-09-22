@@ -214,12 +214,10 @@ export default function TermTemplateEdit( {
 			const usedTaxonomy = previewTaxonomy || currentTaxonomy;
 
 			return {
-				terms: [
-					...( getEntityRecords( 'taxonomy', usedTaxonomy, {
-						...queryArgs,
-						...restQueryArgs,
-					} ) ?? [] ),
-				],
+				terms: getEntityRecords( 'taxonomy', usedTaxonomy, {
+					...queryArgs,
+					...restQueryArgs,
+				} ),
 				blocks: getBlocks( clientId ),
 			};
 		},
