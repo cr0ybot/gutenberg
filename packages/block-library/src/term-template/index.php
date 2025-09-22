@@ -28,7 +28,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 	}
 
 	$query      = $query_block_context['termQuery'];
-	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block, 2 );
+	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block );
 
 	// Use terms from post context if needed.
 	$inherit_from_post = (
