@@ -5,6 +5,7 @@ import { useState, useMemo } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { Modal, SearchControl } from '@wordpress/components';
 import {
+	BlockContextProvider,
 	store as blockEditorStore,
 	__experimentalBlockPatternsList as BlockPatternsList,
 } from '@wordpress/block-editor';
@@ -54,6 +55,16 @@ export default function PatternSelection( {
 	const [ searchValue, setSearchValue ] = useState( '' );
 	const { replaceBlock, selectBlock } = useDispatch( blockEditorStore );
 	const blockPatterns = useBlockPatterns( clientId, attributes );
+	/*
+	 * When we preview Terms Query blocks we should prefer the current
+	 * block's taxonomy, which is passed through block context.
+	 */
+	const blockPreviewContext = useMemo(
+		() => ( {
+			previewTaxonomy: attributes.query.taxonomy,
+		} ),
+		[ attributes.query.taxonomy ]
+	);
 	const filteredBlockPatterns = useMemo( () => {
 		return searchPatterns( blockPatterns, searchValue );
 	}, [ blockPatterns, searchValue ] );
@@ -81,11 +92,13 @@ export default function PatternSelection( {
 					/>
 				</div>
 			) }
-			<BlockPatternsList
-				blockPatterns={ filteredBlockPatterns }
-				onClickPattern={ onBlockPatternSelect }
-				showTitlesAsTooltip={ showTitlesAsTooltip }
-			/>
+			<BlockContextProvider value={ blockPreviewContext }>
+				<BlockPatternsList
+					blockPatterns={ filteredBlockPatterns }
+					onClickPattern={ onBlockPatternSelect }
+					showTitlesAsTooltip={ showTitlesAsTooltip }
+				/>
+			</BlockContextProvider>
 		</div>
 	);
 }
