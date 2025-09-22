@@ -178,6 +178,8 @@ export default function TermTemplateEdit( {
 				if ( termId ) {
 					// If termId is already provided in context, use that as parent.
 					queryArgs.parent = termId;
+					// Also inherit the taxonomy from the current term.
+					currentTaxonomy = termData?.taxonomy || taxonomy;
 				} else {
 					const { isSingular, templateType, templateQuery } =
 						getQueryContextFromTemplate( templateSlug );
@@ -232,6 +234,7 @@ export default function TermTemplateEdit( {
 			restQueryArgs,
 			clientId,
 			termId,
+			termData,
 			postId,
 			templateSlug,
 			previewTaxonomy,
