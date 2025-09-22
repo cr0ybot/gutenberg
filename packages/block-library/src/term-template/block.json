@@ -10,6 +10,7 @@
 	"textdomain": "default",
 	"usesContext": [
 		"termId",
+		"termData",
 		"termQuery",
 		"postId",
 		"templateSlug",

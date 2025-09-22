@@ -147,6 +147,7 @@ export default function TermTemplateEdit( {
 			...restQueryArgs
 		} = {},
 		termId,
+		termData,
 		postId,
 		templateSlug,
 		previewTaxonomy,
@@ -244,7 +245,7 @@ export default function TermTemplateEdit( {
 	// Limit terms to the perPage value and filter out excludes.
 	const filteredTerms = useMemo( () => {
 		if ( ! terms ) {
-			return [];
+			return false;
 		}
 		return terms.slice( 0, perPage ).filter( ( term ) => {
 			if ( exclude && exclude.includes( term.id ) ) {
@@ -256,12 +257,14 @@ export default function TermTemplateEdit( {
 
 	const blockContexts = useMemo(
 		() =>
-			filteredTerms?.map( ( term ) => ( {
-				taxonomy,
-				termId: term.id,
-				classList: `term-${ term.id }`,
-				termData: term,
-			} ) ),
+			filteredTerms
+				? filteredTerms?.map( ( term ) => ( {
+						taxonomy,
+						termId: term.id,
+						classList: `term-${ term.id }`,
+						termData: term,
+				  } ) )
+				: [],
 		[ filteredTerms, taxonomy ]
 	);
 
@@ -270,11 +273,17 @@ export default function TermTemplateEdit( {
 			<div { ...blockProps }>
 				<p className="wp-block-term-template__loading">
 					<Spinner />
-					{ sprintf(
-						/* translators: %s: taxonomy slug */
-						__( 'Loading %s terms…' ),
-						taxonomy
-					) }
+					{ inherit
+						? sprintf(
+								/* translators: %s: term name */
+								__( 'Loading %s child terms…' ),
+								termData?.name ?? taxonomy
+						  )
+						: sprintf(
+								/* translators: %s: taxonomy slug */
+								__( 'Loading %s terms…' ),
+								taxonomy
+						  ) }
 				</p>
 			</div>
 		);
