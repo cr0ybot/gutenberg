@@ -229,6 +229,15 @@ export default function TermTemplateEdit( {
 			// block's taxonomy, which is passed through block context.
 			const usedTaxonomy = previewTaxonomy || currentTaxonomy;
 
+			const isHierarchical =
+				select( coreStore ).getTaxonomy( usedTaxonomy )?.hierarchical;
+
+			// If parent is defined and the taxonomy is not hierarchical, no need
+			// to fetch since there are no child terms.
+			if ( queryArgs.parent > 0 && ! isHierarchical ) {
+				return { terms: [], blocks: getBlocks( clientId ) };
+			}
+
 			return {
 				terms: getEntityRecords( 'taxonomy', usedTaxonomy, {
 					...queryArgs,
