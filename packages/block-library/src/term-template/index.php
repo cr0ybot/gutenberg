@@ -30,10 +30,11 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 	$query      = $query_block_context['termQuery'];
 	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block );
 
-	// Inheritance order: block context, post context, taxonomy archive context.
-	$inherit      = isset( $block->context['query']['inherit'] ) && $block->context['query']['inherit'];
+	// Inherit by default if termId is available in context.
+	$inherit      = isset( $block->context['query']['inherit'] ) ? $block->context['query']['inherit'] : isset( $block->context['termId'] );
 	$inherit_from = 'none';
 
+	// Inheritance order: block context, post context, taxonomy archive context.
 	if ( $inherit && isset( $block->context['termId'] ) ) {
 		$inherit_from = 'block';
 	} elseif ( $inherit && isset( $block->context['postId'] ) ) {
