@@ -71,7 +71,7 @@ function gutenberg_terms_query_register_block_patterns() {
 					<!-- /wp:buttons -->
 					</div>
 					<!-- /wp:group -->
-					<!-- wp:terms-query {"termQuery":{"hideEmpty":false,"inherit":true}} -->
+					<!-- wp:terms-query {"termQuery":{"inherit":true}} -->
 					<div class="wp-block-terms-query">
 					<!-- wp:term-template {"style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"flex","orientation":"horizontal","justifyContent":"left","flexWrap":"wrap"}} -->
 					<!-- wp:buttons -->
