@@ -36,8 +36,7 @@
 	},
 	"usesContext": [ "termId", "termData", "postId", "templateSlug" ],
 	"providesContext": {
-		"termQueryId": "termQueryId",
-		"termQuery": "termQuery"
+		"termQueryId": "termQueryId"
 	},
 	"supports": {
 		"align": [ "wide", "full" ],

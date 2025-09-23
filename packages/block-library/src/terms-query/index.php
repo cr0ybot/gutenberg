@@ -12,21 +12,40 @@
  *
  * @param array    $attributes Block attributes.
  * @param string   $content    Block default content.
+ * @param WP_Block $block      Block instance.
  *
  * @return string Returns the output of the query, structured using the layout defined by the block's inner blocks.
  */
-function render_block_core_terms_query( $attributes, $content ) {
-	$tag_name           = ! empty( $attributes['tagName'] ) ? $attributes['tagName'] : 'div';
-	$wrapper_attributes = get_block_wrapper_attributes();
+function render_block_core_terms_query( $attributes, $content, $block ) {
+	// Inherit by default if termId is available in context.
+	$inherit = isset( $attributes['termQuery']['inherit'] ) ? $attributes['termQuery']['inherit'] : isset( $block->context['termId'] );
 
-	return sprintf(
-		'<%1$s %2$s>%3$s</%1$s>',
-		$tag_name,
-		$wrapper_attributes,
-		$content
-	);
+	$content = '';
+
+	$query_context            = $attributes['termQuery'];
+	$query_context['inherit'] = $inherit;
+
+	if ( $inherit ) {
+		if ( isset( $block->context['termQuery'] ) ) {
+			$query_context['taxonomy'] = $block->context['termQuery']['taxonomy'] ?? $query_context['taxonomy'] ?? 'category';
+		}
+		if ( isset( $block->context['termId'] ) ) {
+			$query_context['parent'] = $block->context['termId'] ?? $query_context['parent'] ?? 0;
+		}
+	}
+
+	$filter_block_context = static function ( $context ) use ( $query_context ) {
+		$context['termQuery'] = $query_context;
+		return $context;
+	};
+
+	// Use an early priority to so that other 'render_block_context' filters have access to the values.
+	add_filter( 'render_block_context', $filter_block_context, 1 );
+	$content = ( new WP_Block( $block->parsed_block ) )->render( array( 'dynamic' => false ) );
+	remove_filter( 'render_block_context', $filter_block_context, 1 );
+
+	return $content;
 }
-
 
 /**
  * Registers the `core/terms-query` block on the server.

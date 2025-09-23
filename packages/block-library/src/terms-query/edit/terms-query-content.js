@@ -6,6 +6,7 @@ import { useInstanceId } from '@wordpress/compose';
 import { useEffect } from '@wordpress/element';
 import {
 	BlockControls,
+	BlockContextProvider,
 	useBlockProps,
 	store as blockEditorStore,
 	useInnerBlocksProps,
@@ -20,12 +21,19 @@ import TermsQueryToolbar from './terms-query-toolbar';
 const TEMPLATE = [ [ 'core/term-template' ] ];
 
 export default function TermsQueryContent( props ) {
-	const { attributes, setAttributes, clientId } = props;
+	const { attributes, setAttributes, clientId, context } = props;
 	const {
 		termQueryId,
 		termQuery = {},
 		tagName: TagName = 'div',
 	} = attributes;
+	const {
+		inherit,
+		taxonomy: initialTaxonomy,
+		parent: initialParent,
+	} = termQuery;
+	const { termQuery: queryContext = {}, termId: termIdContext } = context;
+	const { taxonomy: contextTaxonomy } = queryContext;
 
 	const { __unstableMarkNextChangeAsNotPersistent } =
 		useDispatch( blockEditorStore );
@@ -34,6 +42,23 @@ export default function TermsQueryContent( props ) {
 	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		template: TEMPLATE,
 	} );
+
+	// Maybe inherit taxonomy from parent query.
+	const taxonomyInherited = inherit && !! queryContext;
+	const taxonomy = taxonomyInherited ? contextTaxonomy : initialTaxonomy;
+
+	// Maybe inherit parent from parent query.
+	const parentInherited = inherit && !! termIdContext;
+	const parent = parentInherited ? termIdContext : initialParent || 0;
+
+	/**
+	 * The termQuery context is not declared in the block.json file's
+	 * `providesContext` property so that we can control the value without
+	 * being beholden to the block's attribute value.
+	 */
+	const termQueryContextObject = {
+		termQuery: { ...termQuery, parent, taxonomy },
+	};
 
 	const setQuery = ( newQuery ) => {
 		setAttributes( {
@@ -66,7 +91,9 @@ export default function TermsQueryContent( props ) {
 				/>
 			</BlockControls>
 			<TermsQueryInspectorControls { ...props } setQuery={ setQuery } />
-			<TagName { ...innerBlocksProps } />
+			<BlockContextProvider value={ termQueryContextObject }>
+				<TagName { ...innerBlocksProps } />
+			</BlockContextProvider>
 		</>
 	);
 }
