@@ -21,10 +21,6 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		return '';
 	}
 
-	if ( empty( $block->context['termQuery'] ) ) {
-		return '';
-	}
-
 	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block );
 
 	// Inherit by default if termId is available in context.
@@ -95,15 +91,9 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		// Use an early priority to so that other 'render_block_context' filters have access to the values.
 		add_filter( 'render_block_context', $filter_block_context, 1 );
 
-		// Render the inner blocks of the Post Template block with `dynamic` set to `false` to prevent calling
+		// Render the inner blocks of the Term Template block with `dynamic` set to `false` to prevent calling
 		// `render_callback` and ensure that no wrapper markup is included.
-		if ( method_exists( $block, 'refresh_context_dependents' ) ) {
-			// WP_Block::refresh_context_dependents() was introduced in WordPress 6.8.
-			$block->refresh_context_dependents();
-			$block_content .= $block->render( array( 'dynamic' => false ) );
-		} else {
-			$block_content .= ( new WP_Block( $block_instance ) )->render( array( 'dynamic' => false ) );
-		}
+		$block_content .= ( new WP_Block( $block_instance ) )->render( array( 'dynamic' => false ) );
 
 		remove_filter( 'render_block_context', $filter_block_context, 1 );
 
