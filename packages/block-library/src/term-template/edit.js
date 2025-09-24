@@ -202,26 +202,24 @@ export default function TermTemplateEdit( {
 						queryArgs.post = postId;
 						// We already skipped the termId check so we remove the parent arg.
 						delete queryArgs.parent;
-					} else {
+					} else if ( templateType === 'taxonomy' && templateQuery ) {
 						// Inherit taxonomy from taxonomy archive template slug.
-						currentTaxonomy = templateType;
-						// If we're on a specific term archive template, fetch the term ID to use as the parent.
-						if ( templateQuery ) {
-							const templateTaxonomy = getEntityRecords(
-								'taxonomy',
-								currentTaxonomy,
-								{
-									context: 'view',
-									per_page: 1,
-									_fields: [ 'id' ],
-									slug: templateQuery,
-								}
-							);
+						currentTaxonomy = templateQuery;
 
-							if ( templateTaxonomy ) {
-								queryArgs.parent =
-									templateTaxonomy[ 0 ]?.id ?? 0;
+						// If we're on a specific term archive template, fetch the term ID to use as the parent.
+						const templateTaxonomy = getEntityRecords(
+							'taxonomy',
+							currentTaxonomy,
+							{
+								context: 'view',
+								per_page: 1,
+								_fields: [ 'id' ],
+								slug: templateQuery,
 							}
+						);
+
+						if ( templateTaxonomy ) {
+							queryArgs.parent = templateTaxonomy[ 0 ]?.id ?? 0;
 						}
 					}
 				}
