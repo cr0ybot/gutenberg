@@ -32,8 +32,12 @@ export default function TermsQueryContent( props ) {
 		taxonomy: initialTaxonomy,
 		parent: initialParent,
 	} = termQuery;
-	const { termQuery: queryContext = {}, termId: termIdContext } = context;
-	const { taxonomy: contextTaxonomy } = queryContext;
+	const {
+		termQuery: queryContext = {},
+		taxonomy: contextTaxonomy,
+		termId: termIdContext,
+	} = context;
+	const { taxonomy: queryContextTaxonomy } = queryContext;
 
 	const { __unstableMarkNextChangeAsNotPersistent } =
 		useDispatch( blockEditorStore );
@@ -45,7 +49,9 @@ export default function TermsQueryContent( props ) {
 
 	// Maybe inherit taxonomy from parent query.
 	const taxonomyInherited = inherit && !! queryContext;
-	const taxonomy = taxonomyInherited ? contextTaxonomy : initialTaxonomy;
+	const taxonomy = taxonomyInherited
+		? contextTaxonomy ?? queryContextTaxonomy ?? initialTaxonomy
+		: initialTaxonomy;
 
 	// Maybe inherit parent from parent query.
 	const parentInherited = inherit && !! termIdContext;

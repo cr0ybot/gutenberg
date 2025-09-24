@@ -194,12 +194,14 @@ export default function TermTemplateEdit( {
 					// Also inherit the taxonomy from the current term.
 					currentTaxonomy = termData?.taxonomy || taxonomy;
 				} else {
-					const { isSingular, templateType, templateQuery } =
+					const { templateType, templateQuery } =
 						getQueryContextFromTemplate( templateSlug );
 
-					if ( isSingular ) {
+					if ( postId ) {
 						// If we're on a post, get only the terms for the current post.
 						queryArgs.post = postId;
+						// We already skipped the termId check so we remove the parent arg.
+						delete queryArgs.parent;
 					} else {
 						// Inherit taxonomy from taxonomy archive template slug.
 						currentTaxonomy = templateType;
