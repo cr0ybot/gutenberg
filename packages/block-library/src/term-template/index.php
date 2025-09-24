@@ -87,7 +87,6 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 
 		$block_content = '';
 
-
 		// Use an early priority to so that other 'render_block_context' filters have access to the values.
 		add_filter( 'render_block_context', $filter_block_context, 1 );
 
