@@ -78,7 +78,7 @@ function gutenberg_terms_query_register_block_patterns() {
 					<div class="wp-block-buttons">
 					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}},"text":{"source":"core/term-data","args":{"key":"name"}}}},"className":"is-style-outline"} -->
 					<div class="wp-block-button is-style-outline">
-					<a class="wp-block-button__link wp-element-button"></a>
+					<a class="wp-block-button__link wp-element-button">' . _x( 'Subcategory', 'Block pattern button text' ) . '</a>
 					</div>
 					<!-- /wp:button -->
 					</div>
@@ -102,7 +102,7 @@ function gutenberg_terms_query_register_block_patterns() {
 					<!-- wp:buttons -->
 					<div class="wp-block-buttons">
 					<!-- wp:button {"metadata":{"bindings":{"url":{"source":"core/term-data","args":{"key":"link"}},"text":{"source":"core/term-data","args":{"key":"name"}}}}} -->
-					<div class="wp-block-button"><a class="wp-block-button__link wp-element-button"></a></div>
+					<div class="wp-block-button"><a class="wp-block-button__link wp-element-button">' . _x( 'Tag', 'Block pattern button text' ) . '</a></div>
 					<!-- /wp:button -->
 					</div>
 					<!-- /wp:buttons -->
