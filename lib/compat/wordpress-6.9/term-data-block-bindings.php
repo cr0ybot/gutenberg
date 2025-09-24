@@ -27,7 +27,16 @@ function gutenberg_block_bindings_term_data_get_value( array $source_args, $bloc
 		return null;
 	}
 
-	$term_id  = $block_instance->context['termId'];
+	$term_id = $block_instance->context['termId'];
+	if ( empty( $term_id ) ) {
+		return null;
+	}
+
+	// Return id early if no other data is needed.
+	if ( 'id' === $source_args['key'] ) {
+		return $term_id;
+	}
+
 	$taxonomy = $block_instance->context['taxonomy'];
 
 	// Get the term data.
@@ -45,13 +54,14 @@ function gutenberg_block_bindings_term_data_get_value( array $source_args, $bloc
 	}
 
 	switch ( $source_args['key'] ) {
-		case 'id':
-			return esc_html( (string) $term_id );
-
 		case 'name':
 			return esc_html( $term->name );
 
 		case 'link':
+			// get_term_link will fail if the taxonomy doesn't exist.
+			if ( ! taxonomy_exists( $term->taxonomy ) ) {
+				return null;
+			}
 			return esc_url( get_term_link( $term ) );
 
 		case 'slug':

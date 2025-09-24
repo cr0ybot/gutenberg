@@ -15,7 +15,7 @@ function createDataFields( termDataValues, idValue ) {
 	return {
 		id: {
 			label: __( 'Term ID' ),
-			value: idValue,
+			value: `${ idValue }`,
 			type: 'string',
 		},
 		name: {
@@ -40,7 +40,7 @@ function createDataFields( termDataValues, idValue ) {
 		},
 		parent: {
 			label: __( 'Parent ID' ),
-			value: termDataValues?.parent,
+			value: `${ termDataValues?.parent ?? 0 }`,
 			type: 'string',
 		},
 		count: {
