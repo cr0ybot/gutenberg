@@ -39,7 +39,7 @@ function render_block_core_terms_query( $attributes, $content, $block ) {
 		return $context;
 	};
 
-	// Use an early priority to so that other 'render_block_context' filters have access to the values.
+	// Use an early priority so that other 'render_block_context' filters have access to the values.
 	add_filter( 'render_block_context', $filter_block_context, 1 );
 	$content = ( new WP_Block( $block->parsed_block ) )->render( array( 'dynamic' => false ) );
 	remove_filter( 'render_block_context', $filter_block_context, 1 );
