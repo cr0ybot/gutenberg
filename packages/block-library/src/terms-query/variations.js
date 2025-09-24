@@ -33,6 +33,7 @@ const variations = [
 							[
 								'core/button',
 								{
+									text: __( 'View posts' ),
 									metadata: {
 										bindings: {
 											url: {
