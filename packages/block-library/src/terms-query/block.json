@@ -34,7 +34,13 @@
 			"type": "string"
 		}
 	},
-	"usesContext": [ "termId", "termData", "postId", "templateSlug" ],
+	"usesContext": [
+		"termId",
+		"termData",
+		"termQuery",
+		"postId",
+		"templateSlug"
+	],
 	"providesContext": {
 		"termQueryId": "termQueryId"
 	},
