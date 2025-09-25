@@ -23,14 +23,8 @@
 				"hideEmpty": true,
 				"include": [],
 				"exclude": [],
-				"parent": false,
-				"hierarchical": false
+				"parent": 0
 			}
-		},
-		"termsToShow": {
-			"type": "string",
-			"default": "all",
-			"enum": [ "all", "top-level", "subterms" ]
 		},
 		"tagName": {
 			"type": "string",
@@ -40,10 +34,15 @@
 			"type": "string"
 		}
 	},
+	"usesContext": [
+		"termId",
+		"termData",
+		"termQuery",
+		"postId",
+		"templateSlug"
+	],
 	"providesContext": {
-		"termQueryId": "termQueryId",
-		"termQuery": "termQuery",
-		"termsToShow": "termsToShow"
+		"termQueryId": "termQueryId"
 	},
 	"supports": {
 		"align": [ "wide", "full" ],
