@@ -21,7 +21,7 @@ const usePublicTaxonomies = () => {
 	}, [ taxonomies ] );
 };
 
-export default function TaxonomyControl( { taxonomy, onChange } ) {
+export default function TaxonomyControl( { taxonomy, onChange, inherit } ) {
 	const taxonomies = usePublicTaxonomies();
 
 	const taxonomyOptions = taxonomies.map( ( tax ) => ( {
@@ -34,11 +34,13 @@ export default function TaxonomyControl( { taxonomy, onChange } ) {
 			__nextHasNoMarginBottom
 			__next40pxDefaultSize
 			label={ __( 'Taxonomy' ) }
+			help={ inherit ? __( 'Using inherited taxonomy.' ) : undefined }
 			options={ taxonomyOptions }
 			value={ taxonomy }
 			onChange={ ( selectedTaxonomy ) => {
 				onChange( { taxonomy: selectedTaxonomy } );
 			} }
+			disabled={ inherit || taxonomies.length === 0 }
 		/>
 	);
 }

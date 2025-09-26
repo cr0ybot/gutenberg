@@ -22,8 +22,7 @@
 				"orderBy": "name",
 				"hideEmpty": true,
 				"include": [],
-				"exclude": [],
-				"parent": 0
+				"exclude": []
 			}
 		},
 		"tagName": {

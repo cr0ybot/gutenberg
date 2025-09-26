@@ -23,26 +23,9 @@ export default function TermsQueryInspectorControls( props ) {
 	const { attributes, setQuery, setAttributes, TagName, clientId, context } =
 		props;
 	const { termQuery } = attributes;
-	const {
-		taxonomy: initialTaxonomy,
-		perPage,
-		order,
-		orderBy,
-		hideEmpty,
-		inherit: initialInherit,
-	} = termQuery;
-	const { termId, termData } = context;
+	const { taxonomy, perPage, order, orderBy, hideEmpty, inherit } = termQuery;
+	const { termId } = context;
 	const dropdownMenuProps = useToolsPanelDropdownMenuProps();
-
-	/**
-	 * Inherit taxonomy if not defined.
-	 */
-	const taxonomy = initialTaxonomy || ( termData?.taxonomy ?? 'category' );
-
-	/**
-	 * Default to inheriting the query if the block is nested and inherit is undefined.
-	 */
-	const inherit = initialInherit === undefined ? !! termId : initialInherit;
 
 	return (
 		<>
@@ -65,7 +48,7 @@ export default function TermsQueryInspectorControls( props ) {
 					dropdownMenuProps={ dropdownMenuProps }
 				>
 					<ToolsPanelItem
-						hasValue={ () => initialInherit !== inherit }
+						hasValue={ () => inherit !== !! termId } // If there is a termId in context, we expect the default to be true, false otherwise.
 						label={ __( 'Query type' ) }
 						onDeselect={ () => setQuery( { inherit } ) }
 						isShownByDefault
@@ -86,6 +69,7 @@ export default function TermsQueryInspectorControls( props ) {
 						<TaxonomyControl
 							taxonomy={ taxonomy }
 							onChange={ setQuery }
+							inherit={ inherit }
 						/>
 					</ToolsPanelItem>
 					<ToolsPanelItem

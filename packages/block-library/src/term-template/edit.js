@@ -136,14 +136,14 @@ export default function TermTemplateEdit( {
 	setAttributes,
 	context: {
 		termQuery: {
-			taxonomy: initialTaxonomy,
+			taxonomy,
 			perPage,
 			order,
 			orderBy,
 			include,
 			exclude,
 			hideEmpty = true,
-			inherit: initialInherit,
+			inherit,
 			pages,
 			parent = 0,
 			// Gather extra query args to pass to the REST API call.
@@ -164,19 +164,6 @@ export default function TermTemplateEdit( {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 
-	/**
-	 * Default to inheriting the taxonomy if nested.
-	 */
-	const taxonomy =
-		initialTaxonomy === 'category'
-			? termData?.taxonomy ?? 'category'
-			: initialTaxonomy;
-
-	/**
-	 * Default to inheriting the query if the block is nested and inherit is undefined.
-	 */
-	const inherit = initialInherit === undefined ? !! termId : initialInherit;
-
 	const terms = useSelect(
 		( select ) => {
 			const { getEntityRecords } = select( coreStore );
@@ -186,9 +173,8 @@ export default function TermTemplateEdit( {
 				order,
 				orderby: orderBy,
 				hide_empty: hideEmpty,
-				// To preview the data the closest to the frontend, we fetch the largest number of terms
-				// and limit them during rendering. This is because WP_Term_Query fetches data in hierarchical manner,
-				// while in editor we build the hierarchy manually. It also allows us to avoid re-fetching data when max terms changes.
+				// We fetch the largest number of terms and limit them during rendering, which
+				// allows us to avoid re-fetching data when max terms changes.
 				per_page: 100,
 			};
 
