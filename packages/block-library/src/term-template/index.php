@@ -97,7 +97,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		remove_filter( 'render_block_context', $filter_block_context, 1 );
 
 		// Wrap the render inner blocks in a `li` element with the appropriate term classes.
-		$term_classes = implode( ' ', array( 'wp-block-term', 'term-' . $term->term_id ) );
+		$term_classes = implode( ' ', array( 'wp-block-term', "term-{$term->term_id}", $term->taxonomy, "taxonomy-{$term->taxonomy}" ) );
 
 		$content .= '<li class="' . esc_attr( $term_classes ) . '">' . $block_content . '</li>';
 	}
