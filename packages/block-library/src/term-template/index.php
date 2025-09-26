@@ -21,7 +21,7 @@ function render_block_core_term_template( $attributes, $content, $block ) {
 		return '';
 	}
 
-	$query_args = gutenberg_build_query_vars_from_terms_query_block( $block );
+	$query_args = build_query_vars_from_terms_query_block( $block );
 
 	// Inherit by default if termId is available in context.
 	$inherit      = isset( $block->context['termQuery']['inherit'] ) ? $block->context['termQuery']['inherit'] : isset( $block->context['termId'] );

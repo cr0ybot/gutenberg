@@ -16,7 +16,7 @@
  *
  * @return array Returns the constructed WP_Term_Query arguments.
  */
-function gutenberg_build_query_vars_from_terms_query_block( $block, $page = 1 ) {
+function build_query_vars_from_terms_query_block( $block, $page = 1 ) {
 	$query = array(
 		'taxonomy'   => 'category',
 		'number'     => 10,
