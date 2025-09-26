@@ -8,10 +8,12 @@
 export function getQueryContextFromTemplate( templateSlug ) {
 	// In the Post Editor, the template slug is not available.
 	if ( ! templateSlug ) {
-		return {};
+		return { isSingular: true };
 	}
+	let isSingular = false;
 	let templateType = templateSlug === 'wp' ? 'custom' : templateSlug;
 	let templateQuery = null;
+	const singularTemplates = [ '404', 'blank', 'single', 'page', 'custom' ];
 	const templateTypeFromSlug = templateSlug.includes( '-' )
 		? templateSlug.split( '-', 1 )[ 0 ]
 		: templateSlug;
@@ -22,6 +24,7 @@ export function getQueryContextFromTemplate( templateSlug ) {
 		templateType = templateTypeFromSlug;
 		templateQuery = queryFromTemplateSlug;
 	}
+	isSingular = singularTemplates.includes( templateType );
 
-	return { templateType, templateQuery };
+	return { isSingular, templateType, templateQuery };
 }

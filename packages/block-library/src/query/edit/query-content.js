@@ -20,9 +20,9 @@ import { store as coreStore } from '@wordpress/core-data';
  */
 import EnhancedPaginationControl from './inspector-controls/enhanced-pagination-control';
 import { unlock } from '../../lock-unlock';
+import { getQueryContextFromTemplate } from '../../utils/get-query-context-from-template';
 import QueryInspectorControls from './inspector-controls';
 import EnhancedPaginationModal from './enhanced-pagination-modal';
-import { getQueryContextFromTemplate } from '../utils';
 import QueryToolbar from './query-toolbar';
 
 const { HTMLElementControl } = unlock( blockEditorPrivateApis );

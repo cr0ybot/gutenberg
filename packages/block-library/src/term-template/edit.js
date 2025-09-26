@@ -28,7 +28,7 @@ import { store as coreStore } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
-import { getQueryContextFromTemplate } from './utils';
+import { getQueryContextFromTemplate } from '../utils/get-query-context-from-template';
 
 const TEMPLATE = [
 	[
