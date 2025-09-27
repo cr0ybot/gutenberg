@@ -9,12 +9,15 @@ import {
 	useInnerBlocksProps,
 } from '@wordpress/block-editor';
 import {
-	PanelBody,
+	ExternalLink,
 	RangeControl,
 	TextControl,
 	ToggleControl,
 	ToolbarGroup,
+	__experimentalToolsPanel as ToolsPanel,
+	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
+import { createInterpolateElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { edit } from '@wordpress/icons';
 
@@ -22,10 +25,12 @@ import { edit } from '@wordpress/icons';
  * Internal dependencies
  */
 import { unlock } from '../../lock-unlock';
+import { useToolsPanelDropdownMenuProps } from '../../utils/hooks';
 
 const { HTMLElementControl } = unlock( blockEditorPrivateApis );
 
 const TEMPLATE = [ [ 'core/feed-item-template' ], [ 'core/feed-no-results' ] ];
+const DEFAULT_ITEMS = 5;
 const DEFAULT_MIN_ITEMS = 1;
 const DEFAULT_MAX_ITEMS = 20;
 
@@ -38,14 +43,16 @@ export default function FeedContent( {
 	const {
 		itemsToShow,
 		tagName: TagName = 'div',
-		itemLinkRel,
-		itemLinkTarget,
+		rel,
+		openInNewTab,
 	} = attributes;
 
 	const blockProps = useBlockProps();
 	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		template: TEMPLATE,
 	} );
+
+	const dropdownMenuProps = useToolsPanelDropdownMenuProps();
 
 	const toolbarControls = [
 		{
@@ -61,47 +68,55 @@ export default function FeedContent( {
 				<ToolbarGroup controls={ toolbarControls } />
 			</BlockControls>
 			<InspectorControls>
-				<PanelBody title={ __( 'Feed Loop Settings' ) }>
-					<RangeControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
+				<ToolsPanel
+					label={ __( 'Settings' ) }
+					resetAll={ () => {
+						setAttributes( {
+							itemsToShow: DEFAULT_ITEMS,
+							openInNewTab: false,
+						} );
+					} }
+					dropdownMenuProps={ dropdownMenuProps }
+				>
+					<ToolsPanelItem
+						hasValue={ () => itemsToShow !== DEFAULT_ITEMS }
 						label={ __( 'Number of items' ) }
-						value={ itemsToShow }
-						onChange={ ( value ) =>
-							setAttributes( { itemsToShow: value } )
+						onDeselect={ () =>
+							setAttributes( { itemsToShow: DEFAULT_ITEMS } )
 						}
-						min={ DEFAULT_MIN_ITEMS }
-						max={ DEFAULT_MAX_ITEMS }
-						required
-					/>
-				</PanelBody>
-				<PanelBody title={ __( 'Link Settings' ) }>
-					<p className="description">
-						These link settings apply to any feed-specific link
-						elements within the Feed Loop.
-					</p>
-					<ToggleControl
-						__nextHasNoMarginBottom
-						label={ __( 'Open in new tab' ) }
-						checked={ itemLinkTarget === '_blank' }
-						onChange={ ( nextIsNewTab ) => {
-							setAttributes( {
-								itemLinkTarget: nextIsNewTab
-									? '_blank'
-									: '_self',
-							} );
-						} }
-					/>
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						label={ __( 'Link rel' ) }
-						value={ itemLinkRel }
-						onChange={ ( nextRel ) => {
-							setAttributes( { itemLinkRel: nextRel } );
-						} }
-					/>
-				</PanelBody>
+						isShownByDefault
+					>
+						<RangeControl
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+							label={ __( 'Number of items' ) }
+							value={ itemsToShow }
+							onChange={ ( value ) =>
+								setAttributes( { itemsToShow: value } )
+							}
+							min={ DEFAULT_MIN_ITEMS }
+							max={ DEFAULT_MAX_ITEMS }
+							required
+						/>
+					</ToolsPanelItem>
+					<ToolsPanelItem
+						label={ __( 'Open links in new tab' ) }
+						hasValue={ () => !! openInNewTab }
+						onDeselect={ () =>
+							setAttributes( { openInNewTab: false } )
+						}
+						isShownByDefault
+					>
+						<ToggleControl
+							__nextHasNoMarginBottom
+							label={ __( 'Open links in new tab' ) }
+							checked={ openInNewTab }
+							onChange={ ( value ) =>
+								setAttributes( { openInNewTab: value } )
+							}
+						/>
+					</ToolsPanelItem>
+				</ToolsPanel>
 			</InspectorControls>
 			<InspectorControls __experimentalGroup="advanced">
 				<HTMLElementControl
@@ -116,6 +131,23 @@ export default function FeedContent( {
 						{ label: '<section>', value: 'section' },
 						{ label: '<aside>', value: 'aside' },
 					] }
+				/>
+				<TextControl
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
+					label={ __( 'Link relation' ) }
+					help={ createInterpolateElement(
+						__(
+							'The <a>Link Relation</a> attribute defines the relationship between a linked resource and the current document.'
+						),
+						{
+							a: (
+								<ExternalLink href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel" />
+							),
+						}
+					) }
+					value={ rel || '' }
+					onChange={ ( value ) => setAttributes( { rel: value } ) }
 				/>
 			</InspectorControls>
 			<TagName { ...innerBlocksProps } />
