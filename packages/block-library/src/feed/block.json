@@ -34,9 +34,7 @@
 	"providesContext": {
 		"feedId": "feedId",
 		"feedUrl": "feedUrl",
-		"itemsToShow": "itemsToShow",
-		"itemLinkRel": "itemLinkRel",
-		"itemLinkTarget": "itemLinkTarget"
+		"itemsToShow": "itemsToShow"
 	},
 	"supports": {
 		"align": [ "wide", "full" ],
