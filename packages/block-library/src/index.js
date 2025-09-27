@@ -51,6 +51,7 @@ import * as commentsTitle from './comments-title';
 import * as cover from './cover';
 import * as details from './details';
 import * as embed from './embed';
+import * as feed from './feed';
 import * as file from './file';
 import * as form from './form';
 import * as formInput from './form-input';
@@ -175,6 +176,7 @@ const getAllBlocks = () => {
 		preformatted,
 		pullquote,
 		reusableBlock,
+		feed,
 		rss,
 		search,
 		separator,
