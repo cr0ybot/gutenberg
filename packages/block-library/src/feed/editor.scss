@@ -1,0 +1,12 @@
+.wp-block-feed {
+	$self: &;
+
+	form#{$self}__placeholder-form {
+		display: flex;
+		flex-direction: column;
+
+		button {
+			align-self: flex-start;
+		}
+	}
+}

@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "core/feed",
+	"title": "Feed Loop",
+	"category": "widgets",
+	"description": "Advanced RSS & Atom feed block that displays feed contents based on different parameters and visual configurations, similar to the Query Loop block.",
+	"keywords": [ "rss", "atom", "embed", "loop" ],
+	"textdomain": "default",
+	"attributes": {
+		"feedId": {
+			"type": "number"
+		},
+		"feedUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"itemsToShow": {
+			"type": "number",
+			"default": 6
+		},
+		"tagName": {
+			"type": "string",
+			"default": "div"
+		},
+		"openInNewTab": {
+			"type": "boolean",
+			"default": false
+		},
+		"rel": {
+			"type": "string"
+		}
+	},
+	"providesContext": {
+		"feedId": "feedId",
+		"feedUrl": "feedUrl",
+		"itemsToShow": "itemsToShow",
+		"itemLinkRel": "itemLinkRel",
+		"itemLinkTarget": "itemLinkTarget"
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"interactivity": true
+	},
+	"editorStyle": "wp-block-feed-editor"
+}
