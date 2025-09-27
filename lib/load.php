@@ -44,8 +44,6 @@ if ( class_exists( 'WP_REST_Controller' ) ) {
 	require __DIR__ . '/compat/wordpress-6.9/template-activate.php';
 	require __DIR__ . '/compat/wordpress-6.9/block-bindings.php';
 	require __DIR__ . '/compat/wordpress-6.9/post-data-block-bindings.php';
-	require __DIR__ . '/compat/wordpress-6.9/term-data-block-bindings.php';
-	require __DIR__ . '/compat/wordpress-6.9/terms-query-block.php';
 	require __DIR__ . '/compat/wordpress-6.9/rest-api.php';
 	require __DIR__ . '/compat/wordpress-6.9/class-gutenberg-hierarchical-sort.php';
 
@@ -173,4 +171,10 @@ if ( gutenberg_is_experiment_enabled( 'gutenberg-media-processing' ) ) {
 if ( gutenberg_is_experiment_enabled( 'gutenberg-full-page-client-side-navigation' ) ) {
 	require __DIR__ . '/experimental/interactivity-api/class-gutenberg-interactivity-api-full-page-navigation.php';
 	Gutenberg_Interactivity_API_Full_Page_Navigation::instance();
+}
+
+// Block Experiments.
+if ( gutenberg_is_experiment_enabled( 'gutenberg-block-experiments' ) ) {
+	require __DIR__ . '/experimental/term-data-block-bindings.php';
+	require __DIR__ . '/experimental/terms-query-block.php';
 }
