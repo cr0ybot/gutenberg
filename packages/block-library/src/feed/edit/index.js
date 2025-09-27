@@ -16,7 +16,7 @@ export default function Edit( props ) {
 
 	const [ isEditing, setIsEditing ] = useState( ! attributes.feedURL );
 
-	const onSubmitFeedURL = ( event ) => {
+	const onSubmitFeedUrl = ( event ) => {
 		event.preventDefault();
 
 		if ( feedURL ) {
@@ -27,7 +27,7 @@ export default function Edit( props ) {
 
 	if ( isEditing ) {
 		return (
-			<FeedPlaceholder { ...props } onSubmitFeedURL={ onSubmitFeedURL } />
+			<FeedPlaceholder { ...props } onSubmitFeedUrl={ onSubmitFeedUrl } />
 		);
 	}
 
