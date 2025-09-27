@@ -2,11 +2,13 @@
 	$self: &;
 
 	form#{$self}__placeholder-form {
-		display: flex;
-		flex-direction: column;
 
-		button {
-			align-self: flex-start;
+		#{$self}__placeholder-notice {
+			flex: 1 0 auto;
+		}
+
+		#{$self}__placeholder-input {
+			flex: 1 1 auto;
 		}
 	}
 }

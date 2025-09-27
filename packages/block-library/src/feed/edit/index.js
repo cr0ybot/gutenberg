@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { useState } from '@wordpress/element';
-import { prependHTTP } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -11,16 +10,13 @@ import FeedPlaceholder from './feed-placeholder';
 import FeedContent from './feed-content';
 
 export default function Edit( props ) {
-	const { attributes, setAttributes } = props;
+	const { attributes } = props;
 	const { feedURL } = attributes;
 
 	const [ isEditing, setIsEditing ] = useState( ! attributes.feedURL );
 
-	const onSubmitFeedUrl = ( event ) => {
-		event.preventDefault();
-
+	const onSubmitFeedUrl = () => {
 		if ( feedURL ) {
-			setAttributes( { feedURL: prependHTTP( feedURL ) } );
 			setIsEditing( false );
 		}
 	};
