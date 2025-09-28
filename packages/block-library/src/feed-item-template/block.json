@@ -1,0 +1,67 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"__experimental": true,
+	"name": "core/feed-item-template",
+	"title": "Feed Item Template",
+	"category": "widgets",
+	"ancestor": [ "core/feed" ],
+	"description": "Contains the block elements used to render a feed item, like the title, description, link, and more, similar to the Post Template block.",
+	"textdomain": "default",
+	"usesContext": [ "feedId", "feedUrl", "itemsToShow" ],
+	"supports": {
+		"reusable": false,
+		"html": false,
+		"align": [ "wide", "full" ],
+		"layout": {
+			"allowSwitching": true,
+			"allowEditing": true,
+			"default": {
+				"type": "constrained"
+			}
+		},
+		"color": {
+			"gradients": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalTextTransform": true,
+			"__experimentalTextDecoration": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true
+			}
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": {
+				"__experimentalDefault": "1.25em"
+			},
+			"__experimentalDefaultControls": {
+				"blockGap": true,
+				"padding": false,
+				"margin": false
+			}
+		},
+		"interactivity": {
+			"clientNavigation": true
+		},
+		"__experimentalBorder": {
+			"radius": true,
+			"color": true,
+			"width": true,
+			"style": true
+		}
+	},
+	"style": "wp-block-feed-item-template"
+}

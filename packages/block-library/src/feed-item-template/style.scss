@@ -1,0 +1,9 @@
+.wp-block-feed-item-template {
+	margin-top: 0;
+	margin-bottom: 0;
+	max-width: 100%;
+	list-style: none;
+	padding: 0;
+	// This block has customizable padding, border-box makes that more predictable.
+	box-sizing: border-box;
+}

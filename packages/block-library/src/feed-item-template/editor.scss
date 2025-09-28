@@ -1,0 +1,13 @@
+.wp-block-feed-item-template {
+
+	&__loading {
+		align-items: baseline;
+		display: flex;
+		flex-wrap: wrap;
+
+		code {
+			flex: 1 0 100%;
+			word-break: break-all;
+		}
+	}
+}

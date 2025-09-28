@@ -29,10 +29,10 @@ import { useToolsPanelDropdownMenuProps } from '../../utils/hooks';
 
 const { HTMLElementControl } = unlock( blockEditorPrivateApis );
 
-const TEMPLATE = [ [ 'core/feed-item-template' ], [ 'core/feed-no-results' ] ];
+const TEMPLATE = [ [ 'core/feed-item-template' ] ];
 const DEFAULT_ITEMS = 5;
 const DEFAULT_MIN_ITEMS = 1;
-const DEFAULT_MAX_ITEMS = 20;
+const DEFAULT_MAX_ITEMS = 20; // What is a reasonable limit?
 
 export default function FeedContent( {
 	attributes,

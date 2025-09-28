@@ -52,6 +52,7 @@ import * as cover from './cover';
 import * as details from './details';
 import * as embed from './embed';
 import * as feed from './feed';
+import * as feedItemTemplate from './feed-item-template';
 import * as file from './file';
 import * as form from './form';
 import * as formInput from './form-input';
@@ -176,7 +177,6 @@ const getAllBlocks = () => {
 		preformatted,
 		pullquote,
 		reusableBlock,
-		feed,
 		rss,
 		search,
 		separator,
@@ -250,6 +250,8 @@ const getAllBlocks = () => {
 		blocks.push( accordionPanel );
 		blocks.push( termsQuery );
 		blocks.push( termTemplate );
+		blocks.push( feed );
+		blocks.push( feedItemTemplate );
 	}
 
 	if ( window?.__experimentalEnableFormBlocks ) {

@@ -321,6 +321,16 @@ Advanced RSS & Atom feed block that displays feed contents based on different pa
 -	**Supports:** align (full, wide), interactivity, ~~html~~
 -	**Attributes:** feedId, feedUrl, itemsToShow, openInNewTab, rel, tagName
 
+## Feed Item Template
+
+Contains the block elements used to render a feed item, like the title, description, link, and more, similar to the Post Template block. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/feed-item-template))
+
+-	**Name:** core/feed-item-template
+-	**Experimental:** true
+-	**Category:** widgets
+-	**Ancestor:** core/feed
+-	**Supports:** align (full, wide), color (background, gradients, link, text), interactivity (clientNavigation), layout (allowEditing, allowSwitching, default), spacing (blockGap, margin, padding), typography (fontSize, lineHeight), ~~html~~, ~~reusable~~
+
 ## File
 
 Add a link to a downloadable file. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/file))

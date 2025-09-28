@@ -4,7 +4,8 @@
 	form#{$self}__placeholder-form {
 
 		#{$self}__placeholder-notice {
-			flex: 1 0 auto;
+			box-sizing: border-box;
+			flex: 1 0 100%;
 		}
 
 		#{$self}__placeholder-input {
