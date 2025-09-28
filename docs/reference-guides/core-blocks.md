@@ -316,6 +316,7 @@ Add a block that displays content pulled from other sites, like Twitter or YouTu
 Advanced RSS & Atom feed block that displays feed contents based on different parameters and visual configurations, similar to the Query Loop block. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/feed))
 
 -	**Name:** core/feed
+-	**Experimental:** true
 -	**Category:** widgets
 -	**Supports:** align (full, wide), interactivity, ~~html~~
 -	**Attributes:** feedId, feedUrl, itemsToShow, openInNewTab, rel, tagName
