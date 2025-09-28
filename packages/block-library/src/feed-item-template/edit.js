@@ -87,21 +87,34 @@ export default function FeedItemTemplateEdit( {
 	);
 
 	useEffect( () => {
-		// To do: Fetch feed JSON.
-		if ( ! feedUrl ) {
-			setFeed( null );
-			setIsLoading( false );
+		setIsLoading( true );
+
+		const { ajaxUrl, nonce, action } =
+			window?.__experimentalFeedBlockData || {};
+		if ( ! ajaxUrl || ! nonce || ! action || ! feedUrl ) {
 			return;
 		}
 
-		setIsLoading( true );
-		// Delay to simulate loading.
-		const timeoutId = setTimeout( () => {
-			setFeed( { items: [] } );
+		// Fetch feed JSON from AJAX endpoint.
+		const fetchFeed = async () => {
+			const response = await fetch( ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: new URLSearchParams( {
+					action,
+					url: feedUrl,
+					_ajax_nonce: nonce,
+				} ),
+			} );
+			const responseJson = await response.json();
+			setFeed( responseJson?.data );
 			setIsLoading( false );
-		}, 5000 );
+		};
 
-		return () => clearTimeout( timeoutId );
+		fetchFeed();
 	}, [ feedUrl ] );
 
 	const blockContexts = useMemo( () => {

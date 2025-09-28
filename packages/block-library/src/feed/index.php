@@ -195,6 +195,61 @@ function get_feed_as_json( $url ) {
 }
 
 /**
+ * Fetches a feed's contents as JSON.
+ *
+ * @since 6.9.0
+ *
+ * @todo Does this make sense as a REST endpoint instead?
+ */
+function block_core_feed_get_feed() {
+	check_ajax_referer( 'wp-block-feed' );
+
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_send_json_error( 'Unauthorized' );
+	}
+
+	$url = filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL );
+
+	if ( ! $url ) {
+		wp_send_json_error( 'Invalid URL' );
+	}
+
+	$json = get_feed_as_json( $url );
+
+	if ( is_wp_error( $json ) ) {
+		wp_send_json_error( $json->get_error_message() );
+	}
+
+	wp_send_json_success( $json );
+}
+add_action( 'wp_ajax_feed_block_get_feed', 'block_core_feed_get_feed' );
+
+/**
+ * Additional data to expose to the editor script in the Feed Item Template block.
+ */
+function gutenberg_block_core_feed_item_template_editor_script() {
+	if ( ! gutenberg_is_experiment_enabled( 'gutenberg-block-experiments' ) ) {
+		return;
+	}
+
+	wp_add_inline_script(
+		'wp-block-editor',
+		sprintf(
+			'window.__experimentalFeedBlockData = %s;',
+			wp_json_encode(
+				array(
+					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'wp-block-feed' ),
+					'action'  => 'feed_block_get_feed',
+				)
+			)
+		),
+		'before'
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'gutenberg_block_core_feed_item_template_editor_script' );
+
+/**
  * Registers the `core/feed` block on the server.
  *
  * @since 6.9.0
