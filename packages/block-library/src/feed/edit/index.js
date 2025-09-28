@@ -11,12 +11,12 @@ import FeedContent from './feed-content';
 
 export default function Edit( props ) {
 	const { attributes } = props;
-	const { feedURL } = attributes;
+	const { feedUrl } = attributes;
 
-	const [ isEditing, setIsEditing ] = useState( ! attributes.feedURL );
+	const [ isEditing, setIsEditing ] = useState( ! attributes.feedUrl );
 
 	const onSubmitFeedUrl = () => {
-		if ( feedURL ) {
+		if ( feedUrl ) {
 			setIsEditing( false );
 		}
 	};

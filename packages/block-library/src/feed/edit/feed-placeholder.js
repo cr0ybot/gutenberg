@@ -21,7 +21,7 @@ export default function FeedPlaceholder( {
 	setAttributes,
 	onSubmitFeedUrl,
 } ) {
-	const { feedURL } = attributes;
+	const { feedUrl } = attributes;
 	const [ notice, setNotice ] = useState( null );
 	const siteUrl = useSelect(
 		( select ) => select( coreStore ).getSite()?.url
@@ -32,18 +32,18 @@ export default function FeedPlaceholder( {
 	 * Ensure the URL is not from the same root as the site URL.
 	 * @param {Event} event The submit event.
 	 */
-	const handleSubmitFeedUrl = ( event ) => {
+	const handleSubmitfeedUrl = ( event ) => {
 		event.preventDefault();
 
-		if ( ! feedURL ) {
+		if ( ! feedUrl ) {
 			setNotice( __( 'Please enter a feed URL.' ) );
 			return;
 		}
 
-		const normalizedFeedURL = prependHTTP( feedURL );
+		const normalizedfeedUrl = prependHTTP( feedUrl );
 
 		// To do: check URLs with protocol stripped.
-		if ( siteUrl && normalizedFeedURL.startsWith( siteUrl ) ) {
+		if ( siteUrl && normalizedfeedUrl.startsWith( siteUrl ) ) {
 			setNotice(
 				__(
 					'Please enter a feed URL that is not from the current site.'
@@ -52,7 +52,7 @@ export default function FeedPlaceholder( {
 			return;
 		}
 		setNotice( null );
-		setAttributes( { feedURL: normalizedFeedURL } );
+		setAttributes( { feedUrl: normalizedfeedUrl } );
 		onSubmitFeedUrl();
 	};
 
@@ -66,7 +66,7 @@ export default function FeedPlaceholder( {
 				) }
 			>
 				<form
-					onSubmit={ handleSubmitFeedUrl }
+					onSubmit={ handleSubmitfeedUrl }
 					className="wp-block-feed__placeholder-form"
 				>
 					{ notice && (
@@ -85,9 +85,9 @@ export default function FeedPlaceholder( {
 						type="url"
 						hideLabelFromVision
 						placeholder={ __( 'https://example.com/feed' ) }
-						value={ feedURL }
+						value={ feedUrl }
 						onChange={ ( value ) =>
-							setAttributes( { feedURL: value } )
+							setAttributes( { feedUrl: value } )
 						}
 						className="wp-block-feed__placeholder-input"
 					/>
